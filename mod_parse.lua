@@ -5,7 +5,7 @@
 -- Generate docs with LDoc.
 local json = require("json")
 local url = require("socket.url")
-
+---
 ---Parse Class
 -- @type Parse
 local Parse = 
