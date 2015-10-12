@@ -59,19 +59,25 @@ local function exit(event)
                 --expiró la sesion
             else
                 local user_object_id=event.response.objectId
-                parse:createObject("Score", {["score"] = mydata.score}, function(e) 
-                    if not e.error then
-                        local score_object_id = e.response.objectId
-                        parse:linkObject("Score", score_object_id, "player", parse.USER_CLASS, user_object_id, function(e)
-                            if not e.error then
-                                print("score!")
-                                puntuacionreal=0
-                                puntuacionNum.text=0
-                                composer.gotoScene("score")
-                             end
-                        end)
-                    end
-                end)
+                if mydata.score~=0 then
+                    parse:createObject("Score", {["score"] = mydata.score}, function(e) 
+                        if not e.error then
+                            local score_object_id = e.response.objectId
+                            parse:linkObject("Score", score_object_id, "player", parse.USER_CLASS, user_object_id, function(e)
+                                if not e.error then
+                                    print("score!")
+                                    puntuacionreal=0
+                                    puntuacionNum.text=0
+                                    composer.gotoScene("score")
+                                 end
+                            end)
+                        end
+                    end)
+                end
+                print("score!")
+                puntuacionreal=0
+                puntuacionNum.text=0
+                composer.gotoScene("score")
             end
         end
         parse:getMe( onGetMe )
@@ -236,6 +242,7 @@ local function siguiente (event)
         else
             pregunta = display.newText(event.results[num].pregunta, centrox, 260, native.systemFont, 18)
             pregunta:setFillColor(0,0,0)
+            screenGroup:insert(pregunta)
         end
 
 
@@ -624,6 +631,7 @@ local function onGetObjects( event )
         else
             pregunta = display.newText(event.results[num].pregunta, centrox, 260, native.systemFont, 18)
             pregunta:setFillColor(0,0,0)
+            screenGroup:insert(pregunta)
         end
 
         local function boton1(event) 
