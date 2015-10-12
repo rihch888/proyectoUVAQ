@@ -2,6 +2,7 @@ local composer = require( "composer" )
 local widget = require( "widget" )
 local parse = require( "mod_parse" )
 local widget = require( "widget" )
+local date = os.date( "*t" )   
 local scene = composer.newScene()
 parse:init({ 
   appId = "IBEd9JQGfKtJHTCPzXddQsVT6aQUn8Q0LOe8wR5i", 
@@ -31,11 +32,11 @@ function scene:create( event )
             if (event.response.evento==nil) then
                 print("No hay eventos")
             else
-                print("Si hay eventos")
                 eventoId = event.response.evento
                 print(eventoId)
                 local function onGetObjects( event )
                   if not event.error then
+                    local cont = 0
                     print( event.results[1].nombre )
                     local nombreEvento = display.newText(event.results[1].nombre, centrox, 130, native.systemFont, 30)
                     nombreEvento:setFillColor( 0, 0, 0 )
@@ -44,25 +45,112 @@ function scene:create( event )
                     imagen.x = display.contentCenterX
                     imagen.y = display.contentCenterY-50
                     screenGroup:insert( imagen )
+                    local stringFeIni=string.gsub(event.results[1].fecha_inicio.iso, "T", " Hora: ")
+                    stringFeIni=string.gsub(stringFeIni, ".00.000Z", "")
+                    print(stringFeIni)
+                    local stringFeFin=string.gsub(event.results[1].fecha_fin.iso, "T", " Hora: ")
+                    stringFeFin=string.gsub(stringFeFin, ".00.000Z", "")
+                    print(stringFeFin)
+                    print( date.year, date.month, date.day )  -- Print year and month
+                    print( date.hour, date.min ) 
                     local fechaIniTxt = display.newText("Inicio Evento:", centrox-65, 320, native.systemFont, 20)
                     fechaIniTxt:setFillColor( 0, 0, 0 )
                     screenGroup:insert( fechaIniTxt )
-                    local fechaIni = display.newText(event.results[1].fecha_inicio.iso, centrox, 350, native.systemFont, 20)
+                    local fechaIni = display.newText(stringFeIni, centrox, 350, native.systemFont, 20)
                     fechaIni:setFillColor( 0, 0, 0 )
                     screenGroup:insert( fechaIni )
                     local fechaFinTxt = display.newText("Fin Evento:", centrox-75, 380, native.systemFont, 20)
                     fechaFinTxt:setFillColor( 0, 0, 0 )
                     screenGroup:insert( fechaFinTxt )
-                    local fechaFin = display.newText(event.results[1].fecha_fin.iso, centrox, 410, native.systemFont, 20)
+                    local fechaFin = display.newText(stringFeFin, centrox, 410, native.systemFont, 20)
                     fechaFin:setFillColor( 0, 0, 0 )
                     screenGroup:insert( fechaFin )
-                    
-                    local function comen( event )
+                    if string.find(stringFeIni, date.year.."(-)"..date.month.."(-)"..date.day.." Hora: ")~=nil then
+                        print("estas en fecha")
+                        for i=0,23 do
+                            if i<=9 then
+                                if string.find(stringFeIni, ": 0"..i, -7)~=nil then
+                                    if date.hour>=i then
+                                        print("mayor/igual que hora inicio")
+                                        cont=cont+1
+                                    else
+                                        print("menor que hora inicio")
+                                    end
+                                end
+                                if string.find(stringFeFin, ": 0"..i, -7)~=nil then
+                                    if date.hour<i then
+                                        print("menor que hora fin")
+                                        cont=cont+1
+                                    else
+                                        print("mayor/igual que hora fin")
+                                    end
+                                end
+                            else
+                                if string.find(stringFeIni, ": "..i, -7)~=nil then
+                                    if date.hour>=i then
+                                        print("mayor/igual que hora inicio")
+                                        cont=cont+1
+                                    else
+                                        print("menor que hora inicio")
+                                    end
+                                end
+                                if string.find(stringFeFin, ": "..i, -7)~=nil then
+                                    if date.hour<i then
+                                        print("menor que hora fin")
+                                        cont=cont+1
+                                    else
+                                        print("mayor/igual que hora fin")
+                                    end
+                                end
+                            end
+                        end
+
+                        for i=0, 59 do --for para recorrer todos los minutos de la hora
+                            if i<=9 then --if para aumentar un '0' a la izquierda a los numeros menores a 10
+                                if string.find(stringFeIni, "0"..i, -2)~=nil then --if para buscar los minutos en el string 'stringFeIni'
+                                    if date.min >= i then --si los minutos actuales son mayores o iguales a los minutos del evento
+                                        print("mayor/igual que minutos inicio")
+                                        cont=cont+1
+                                    else
+                                        print("menor que minutos inicio")
+                                    end
+                                end
+                                if string.find(stringFeFin, "0"..i, -2)~=nil or cont==3 then
+                                    if date.min <= i then
+                                        print("menor/igual que minutos fin")
+                                        cont=cont+1
+                                    else
+                                        print("mayor que minutos fin")
+                                    end
+                                end
+                            else
+                                if string.find(stringFeIni, i, -2)~=nil then --if para buscar los minutos en el string 'stringFeIni'
+                                    if date.min >= i then --si los minutos actuales son mayores o iguales a los minutos del evento
+                                        print("mayor/igual que minutos inicio")
+                                        cont=cont+1
+                                    else
+                                        print("menor que minutos inicio")
+                                    end
+                                end
+                                if string.find(stringFeFin, i, -2)~=nil or cont==3 then
+                                    if date.min <= i then
+                                        print("menor/igual que minutos fin")
+                                        cont=cont+1
+                                    else
+                                        print("mayor que minutos fin")
+                                    end
+                                end
+                            end
+                        end
+                        print("contador: "..cont)
+                    end
+                    if cont==4 then
+                        print("estas en tiempo del evento")
+                        local function comen( event )
                         if ( "ended" == event.phase ) then
                             --composer.gotoScene("jugarEvento")
                         end
                     end
-    
                     local comenzar = widget.newButton
                     {
                         left = 70,
@@ -99,7 +187,18 @@ function scene:create( event )
                         labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
                     }
                     screenGroup:insert( puntuacion )
-                  end
+
+                    else
+                        print("no estas a tiempo del evento")
+                        local participantes = display.newText("Participantes: "..event.results[1].inscritos, centrox, 450, native.systemFont, 20)
+                        participantes:setFillColor( 0, 0, 0 )
+                        screenGroup:insert( participantes )
+                        local capacidad = display.newText("Capacidad: "..event.results[1].capacidad, centrox, 480, native.systemFont, 20)
+                        capacidad:setFillColor( 0, 0, 0 )
+                        screenGroup:insert( capacidad )
+                    end
+                   
+                   end
                 end
                 local queryTable = { 
                   ["where"] = { ["objectId"] = eventoId }
@@ -155,15 +254,18 @@ end
 
 function scene:destroy( event )
     local sceneGroup = self.view
+    background:removeSelf()
     textlog:removeSelf()
     nombreEvento:removeSelf()
     imagen:removeSelf()
-    fechaIni:removeSelf()
-    fechaFin:removeSelf()
     fechaIniTxt:removeSelf()
+    fechaIni:removeSelf()
     fechaFinTxt:removeSelf()
+    fechaFin:removeSelf()
     comenzar:removeSelf()
     puntuacion:removeSelf()
+    participantes:removeSelf()
+    capacidad:removeSelf()
 end
 
 ---------------------------------------------------------------------------------
