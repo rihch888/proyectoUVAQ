@@ -38,6 +38,7 @@ function scene:create( event )
     
     local function juega( event )
         if ( "ended" == event.phase ) then
+            composer.removeScene( "seleccionCategoria")
             composer.gotoScene("seleccionCategoria")
         end
     end
