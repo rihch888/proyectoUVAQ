@@ -146,18 +146,12 @@ myRoundedRect:setFillColor( 1 )
 myRoundedRect:setStrokeColor( 0, 0.5, 0.7 )
 screenGroup:insert( myRoundedRect )
 
-local function onGetMe( event )
-    if event.code == parse.EXPIRED then
-        local textlog = display.newText("Expiro la session ", centrox, 140, native.systemFont, 30)
-        textlog:setFillColor( 0, 0, 0 )
-        screenGroup:insert( textlog )
-    else
-        local nombre = display.newText(event.response.nombre, centrox, 140, native.systemFont, 18)
-        nombre:setFillColor(0,0,0)
-        screenGroup:insert( nombre )    
-    end
-end
-parse:getMe( onGetMe )
+
+local mydata = require( "mydata" )
+local categoria = mydata.categoria
+local nombreCategoria = display.newText(categoria, centrox, 140, native.systemFont, 18)
+nombreCategoria:setFillColor(0,0,0)
+screenGroup:insert( nombreCategoria )
 
 
 
