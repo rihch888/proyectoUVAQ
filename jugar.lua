@@ -13,9 +13,6 @@ function scene:create( event )
 local screenGroup = self.view
 
 
---composer.removeScene( "seleccionCategoria", true )
---composer.removeHidden( true )
-
 centrox = display.contentCenterX
 centroy = display.contentCenterY
 local background = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
@@ -40,15 +37,15 @@ estrella.y = 80
 screenGroup:insert( estrella )
 local puntuacion = display.newText("Aciertos:", centrox+(centrox/4), 80, native.systemFont, 20)
 puntuacion:setFillColor(0, 0, 0)
+local mydata = require( "mydata" )
 screenGroup:insert( puntuacion )
-local puntuacionNum = display.newText("0", centrox+(centrox/1.8), 80, native.systemFont, 20)
+local puntuacionNum = display.newText(mydata.score, centrox+(centrox/1.8), 80, native.systemFont, 20)
 puntuacionNum:setFillColor(0, 0, 0)
 screenGroup:insert( puntuacionNum )
 
 local function exit(event) 
     if event.phase == "ended" then
         local mydata = require( "mydata" )
-        mydata.score = puntuacionreal
         
         local function onGetMe( event )
             if event.code == parse.EXPIRED then
@@ -62,8 +59,7 @@ local function exit(event)
                             parse:linkObject("Score", score_object_id, "player", parse.USER_CLASS, user_object_id, function(e)
                                 if not e.error then
                                     print("score!")
-                                    puntuacionreal=0
-                                    puntuacionNum.text=0
+                                    composer.removeScene( "score")
                                     composer.gotoScene("score")
                                  end
                             end)
@@ -133,6 +129,11 @@ parse:getMe( onGetMe )
 
 local function onGetObjects( event )
     if not event.error then
+
+        local mydata = require( "mydata" )
+        print("-------------------------")
+        print("Score: "..mydata.score)
+        print("-------------------------")
         print( #event.results )
         local num = math.random(#event.results)
         print(num)
@@ -241,21 +242,14 @@ local function onGetObjects( event )
 
         local function boton1(event) 
             if event.phase == "ended" then
-            if play~=nil then
-                play:removeSelf()
-                play=nil
-            end
-            if imagen~=nil then
-                imagen:removeSelf()
-                imagen=nil
-            end
+            
                 --print("Res1 "..res1.." correcta "..correcta)
                 displayTime.isVisible=false
                 --progressView:removeSelf()
                 Runtime:removeEventListener("enterFrame", checkTime)
                 if res1 == correcta then
-                    puntuacionreal=puntuacionreal+1
-                    puntuacionNum.text=puntuacionreal
+                    local mydata = require( "mydata" )
+                    mydata.score = mydata.score+1
                     pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
                     pant:setFillColor(0, 0, 0, 0.9)
                     screenGroup:insert( pant )
@@ -325,18 +319,11 @@ local function onGetObjects( event )
 
         local function boton2(event) 
             if event.phase == "ended" then
-            if play~=nil then
-                play:removeSelf()
-                play=nil
-            end
-            if imagen~=nil then
-                imagen:removeSelf()
-                imagen=nil
-            end
+
                 Runtime:removeEventListener("enterFrame", checkTime)
                 if res2 == correcta then
-                    puntuacionreal=puntuacionreal+1
-                    puntuacionNum.text=puntuacionreal
+                    local mydata = require( "mydata" )
+                    mydata.score = mydata.score+1
                     pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
                     pant:setFillColor(0, 0, 0, 0.9)
                     screenGroup:insert( pant )
@@ -408,18 +395,11 @@ local function onGetObjects( event )
 
         local function boton3(event) 
             if event.phase == "ended" then
-                if play~=nil then
-                play:removeSelf()
-                play=nil
-            end
-            if imagen~=nil then
-                imagen:removeSelf()
-                imagen=nil
-            end
+                
                 Runtime:removeEventListener("enterFrame", checkTime)
                 if res3 == correcta then
-                    puntuacionreal=puntuacionreal+1
-                    puntuacionNum.text=puntuacionreal
+                    local mydata = require( "mydata" )
+                    mydata.score = mydata.score+1
                     pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
                     pant:setFillColor(0, 0, 0, 0.9)
                     screenGroup:insert( pant )

@@ -38,8 +38,8 @@ function scene:create( event )
 	estrella.y = 330
 	sceneGroup:insert( estrella )
 
-	local mydata = require( "mydata" )
-	local puntuacionNumero = display.newText(mydata.score, centrox, 330, native.systemFont, 60)
+	--local mydata = require( "mydata" )
+	puntuacionNumero = display.newText("", centrox, 330, native.systemFont, 60)
 	puntuacionNumero:setFillColor(0, 0, 0)
 	sceneGroup:insert( puntuacionNumero )
 	--mydata.score.text="0"
@@ -47,7 +47,8 @@ function scene:create( event )
 
 	 local function exit(event) 
 	            if event.phase == "ended" then
-	            	puntuacionNumero.text=""
+	            	--puntuacionNumero.text=""
+	            	local mydata = require( "mydata" )
 	            	mydata.score=0
 	                composer.gotoScene("menuSesion")
 
@@ -77,7 +78,8 @@ function scene:show( event )
     if ( phase == "will" ) then
         -- Called when the scene is still off screen (but is about to come on screen).
     elseif ( phase == "did" ) then	
-
+    	local mydata = require( "mydata" )
+    	puntuacionNumero.text=mydata.score
     end
 end
 

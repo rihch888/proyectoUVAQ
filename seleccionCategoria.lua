@@ -93,6 +93,7 @@ function scene:show( event )
     elseif ( phase == "did" ) then
     	Runtime:removeEventListener( "enterFrame", doTurn )
 		print(imagens2.rotation)
+		presionado = false
         flecha.rotation = -7
 		local reverse = 1
 		local continua = false
@@ -114,6 +115,7 @@ function scene:show( event )
 			if imagens2.rotation < random2 then
 		    	imagens2.rotation = imagens2.rotation + 8
 		    	continua=true
+		    	presionado=true
 		    	--print(imagens2.rotation)
 			elseif imagens2.rotation >= random2 and continua == true then
 				continua=false
@@ -129,12 +131,9 @@ function scene:show( event )
 		end
 
 		local function girar()
-
-			local cont2=0
-			cont2=cont2+1
 			print("dio tap a ruleta")
 			local categorias = {"Arte", "Deportes", "Historia", "Geografía", "Cine", "Entretenimiento", "Música", "Ciencia"}
-
+			if presionado == false then
 				random = math.random(8)
 				random2 = 1
 				if random == 1 then
@@ -177,13 +176,11 @@ function scene:show( event )
 				tiempoEspera=timer.performWithDelay( 100, rockRect, 0 )
 
 				Runtime:addEventListener( "enterFrame", doTurn )
-
 			end
+		end
 		
 
-
-			imagens2:addEventListener("tap", girar)
-	
+		imagens2:addEventListener("tap", girar)
 
 	end
 
