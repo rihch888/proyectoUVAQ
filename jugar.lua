@@ -32,21 +32,55 @@ imagens.y = 30
 screenGroup:insert( imagens )
 --
 local estrella = display.newImageRect("estrella.png",60,60)
-estrella.x = centrox-(centrox/2)
+estrella.x = centrox-(centrox*0.6)
 estrella.y = 80
 screenGroup:insert( estrella )
-local puntuacion = display.newText("Aciertos:", centrox+(centrox/4), 80, native.systemFont, 20)
+local mydata = require( "mydata" )
+print("VIDAS: "..mydata.lives)
+if mydata.lives >= 1 then
+    heart1 = display.newImageRect("heart.png", 25, 25)
+    heart1.x = centrox*0.67
+    heart1.y=80
+    screenGroup:insert( heart1 )
+end
+if mydata.lives >= 2 then
+    heart2 = display.newImageRect("heart.png", 25, 25)
+    heart2.x = centrox*0.81
+    heart2.y=80
+    screenGroup:insert( heart2 )
+end
+if mydata.lives >= 3 then
+    heart3 = display.newImageRect("heart.png", 25, 25)
+    heart3.x = centrox*0.96
+    heart3.y=80
+    screenGroup:insert( heart3 )
+end
+if mydata.lives >= 4 then
+    heart4 = display.newImageRect("heart.png", 25, 25)
+    heart4.x = centrox*1.09
+    heart4.y=80
+    screenGroup:insert( heart4 )
+end
+if mydata.lives == 5 then
+    heart5 = display.newImageRect("heart.png", 25, 25)
+    heart5.x = centrox*1.23
+    heart5.y=80
+    screenGroup:insert( heart5 )
+end
+
+local puntuacion = display.newText("Aciertos:", centrox+(centrox/1.8), 80, native.systemFont, 20)
 puntuacion:setFillColor(0, 0, 0)
 local mydata = require( "mydata" )
 screenGroup:insert( puntuacion )
-local puntuacionNum = display.newText(mydata.score, centrox+(centrox/1.8), 80, native.systemFont, 20)
+local puntuacionNum = display.newText(mydata.score, centrox+(centrox/1.2), 80, native.systemFont, 20)
 puntuacionNum:setFillColor(0, 0, 0)
 screenGroup:insert( puntuacionNum )
+botonAudioActivo=false
 
-local function exit(event) 
+function exit(event) 
     if event.phase == "ended" then
         local mydata = require( "mydata" )
-        
+        mydata.lives=5
         local function onGetMe( event )
             if event.code == parse.EXPIRED then
                 --expiró la sesion
@@ -81,7 +115,7 @@ end
             left = 160,
             top = 530,
             id = "bexit",
-            label = "Terminar",
+            label = "Salir",
             onEvent = exit,
             shape="roundedRect",
             width = 100,
@@ -92,7 +126,7 @@ end
         }
         screenGroup:insert( bexit )
 ------------------------------------
-local function siguiente (event)
+function siguiente (event)
     if ( "ended" == event.phase ) then
         composer.removeScene( "seleccionCategoria")
         composer.gotoScene("seleccionCategoria")
@@ -146,6 +180,7 @@ local function onGetObjects( event )
             rand2 = math.random(3)
             rand3 = math.random(3)
         end
+        botonAudioActivo=false
      
         print("Random1: "..rand1.." Random2: "..rand2.." Random3: "..rand3)
         local res1, res2, res3
@@ -228,8 +263,10 @@ local function onGetObjects( event )
                 play.x=centrox
                 play.y=centroy
                 screenGroup:insert( play )
-                local function playAudio()
+                botonAudioActivo=true
+                function playAudio()
                     audio.play( sound )
+
                     --media.playSound( "audio.wav", system.TemporaryDirectory )
                 end
                 play:addEventListener("tap", playAudio)
@@ -240,7 +277,7 @@ local function onGetObjects( event )
             screenGroup:insert(pregunta)
         end
 
-        local function boton1(event) 
+        function boton1(event) 
             if event.phase == "ended" then
             
                 --print("Res1 "..res1.." correcta "..correcta)
@@ -253,6 +290,13 @@ local function onGetObjects( event )
                     pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
                     pant:setFillColor(0, 0, 0, 0.9)
                     screenGroup:insert( pant )
+                    b1:setEnabled( false )
+                    b2:setEnabled( false )
+                    b3:setEnabled( false )
+                    bexit:setEnabled( false )
+                    if botonAudioActivo == true then
+                        play:removeEventListener("tap", playAudio)
+                    end
                     palomita = display.newImageRect("paloma.png",60,60)
                     palomita.x = centrox
                     palomita.y = 200
@@ -274,29 +318,67 @@ local function onGetObjects( event )
                     }
                     screenGroup:insert( continuar )
                 else
-                    pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
-                    pant:setFillColor(0, 0, 0, 0.9)
-                    screenGroup:insert( pant )
-                    tache = display.newImageRect("tache.png",60,60)
-                    tache.x = centrox
-                    tache.y = 200
-                    screenGroup:insert( tache )
-                    incorrecto = display.newText("Incorrecto", centrox, 130, native.systemFont, 38)
-                    screenGroup:insert( incorrecto )
-                    continuar = widget.newButton
-                    {
-                    left = 85,
-                    top = 270,
-                    label = "Continuar",
-                    onEvent = siguiente,
-                    shape="roundedRect",
-                    width = 150,
-                    height = 40,
-                    cornerRadius = 10,
-                    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
-                    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
-                    }
-                    screenGroup:insert( continuar )
+                    b1:setEnabled( false )
+                    b2:setEnabled( false )
+                    b3:setEnabled( false )
+                    bexit:setEnabled( false )
+                    if botonAudioActivo == true then
+                        play:removeEventListener("tap", playAudio)
+                    end
+                    local mydata = require( "mydata" )
+                    mydata.lives=mydata.lives-1 
+                    if mydata.lives == 0 then
+                        local mydata = require( "mydata" )
+                        pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
+                        pant:setFillColor(0, 0, 0, 0.9)
+                        screenGroup:insert( pant )
+                        acaba2 = display.newText("Oportunidades", centrox, 100, native.systemFont, 38)
+                        screenGroup:insert( acaba2 )
+                        acaba3 = display.newText("Agotadas!", centrox, 150, native.systemFont, 38)
+                        screenGroup:insert( acaba3 )
+                        sad = display.newImageRect("sad.png",150,150)
+                        sad.x = centrox
+                        sad.y = 270
+                        screenGroup:insert( sad )
+                        continuar = widget.newButton
+                        {
+                        left = 85,
+                        top = 370,
+                        label = "Continuar",
+                        onEvent = exit,
+                        shape="roundedRect",
+                        width = 150,
+                        height = 40,
+                        cornerRadius = 10,
+                        fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+                        labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+                        }
+                        screenGroup:insert( continuar )
+                    else
+                        pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
+                        pant:setFillColor(0, 0, 0, 0.9)
+                        screenGroup:insert( pant )                 
+                        tache = display.newImageRect("tache.png",60,60)
+                        tache.x = centrox
+                        tache.y = 200
+                        screenGroup:insert( tache )
+                        incorrecto = display.newText("Incorrecto", centrox, 130, native.systemFont, 38)
+                        screenGroup:insert( incorrecto )
+                        continuar = widget.newButton
+                        {
+                        left = 85,
+                        top = 270,
+                        label = "Continuar",
+                        onEvent = siguiente,
+                        shape="roundedRect",
+                        width = 150,
+                        height = 40,
+                        cornerRadius = 10,
+                        fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+                        labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+                        }
+                        screenGroup:insert( continuar )
+                    end
                 end
             end
         end
@@ -317,7 +399,7 @@ local function onGetObjects( event )
         }
         screenGroup:insert( b1 )
 
-        local function boton2(event) 
+        function boton2(event) 
             if event.phase == "ended" then
 
                 Runtime:removeEventListener("enterFrame", checkTime)
@@ -327,6 +409,13 @@ local function onGetObjects( event )
                     pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
                     pant:setFillColor(0, 0, 0, 0.9)
                     screenGroup:insert( pant )
+                    b1:setEnabled( false )
+                    b2:setEnabled( false )
+                    b3:setEnabled( false )
+                    bexit:setEnabled( false )
+                    if botonAudioActivo == true then
+                        play:removeEventListener("tap", playAudio)
+                    end
                     palomita = display.newImageRect("paloma.png",60,60)
                     palomita.x = centrox
                     palomita.y = 200
@@ -348,29 +437,70 @@ local function onGetObjects( event )
                     }
                     screenGroup:insert( continuar )
                 else
-                    pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
-                    pant:setFillColor(0, 0, 0, 0.9)
-                    screenGroup:insert( pant )
-                    tache = display.newImageRect("tache.png",60,60)
-                    tache.x = centrox
-                    tache.y = 200
-                    screenGroup:insert( tache )
-                    incorrecto = display.newText("Incorrecto", centrox, 130, native.systemFont, 38)
-                    screenGroup:insert( incorrecto )
-                    continuar = widget.newButton
-                    {
-                    left = 85,
-                    top = 270,
-                    label = "Continuar",
-                    onEvent = siguiente,
-                    shape="roundedRect",
-                    width = 150,
-                    height = 40,
-                    cornerRadius = 10,
-                    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
-                    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
-                    }
-                    screenGroup:insert( continuar )
+                    b1:setEnabled( false )
+                    b2:setEnabled( false )
+                    b3:setEnabled( false )
+                    bexit:setEnabled( false )
+                    if botonAudioActivo == true then
+                        play:removeEventListener("tap", playAudio)
+                    end
+                    if botonAudioActivo == true then
+                        play:removeEventListener("tap", playAudio)
+                    end
+                    local mydata = require( "mydata" )
+                    mydata.lives=mydata.lives-1 
+                    if mydata.lives == 0 then
+                        local mydata = require( "mydata" )
+                        pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
+                        pant:setFillColor(0, 0, 0, 0.9)
+                        screenGroup:insert( pant )
+                        acaba2 = display.newText("Oportunidades", centrox, 100, native.systemFont, 38)
+                        screenGroup:insert( acaba2 )
+                        acaba3 = display.newText("Agotadas!", centrox, 150, native.systemFont, 38)
+                        screenGroup:insert( acaba3 )
+                        sad = display.newImageRect("sad.png",150,150)
+                        sad.x = centrox
+                        sad.y = 270
+                        screenGroup:insert( sad )
+                        continuar = widget.newButton
+                        {
+                        left = 85,
+                        top = 370,
+                        label = "Continuar",
+                        onEvent = exit,
+                        shape="roundedRect",
+                        width = 150,
+                        height = 40,
+                        cornerRadius = 10,
+                        fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+                        labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+                        }
+                        screenGroup:insert( continuar )
+                    else
+                        pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
+                        pant:setFillColor(0, 0, 0, 0.9)
+                        screenGroup:insert( pant )
+                        tache = display.newImageRect("tache.png",60,60)
+                        tache.x = centrox
+                        tache.y = 200
+                        screenGroup:insert( tache )
+                        incorrecto = display.newText("Incorrecto", centrox, 130, native.systemFont, 38)
+                        screenGroup:insert( incorrecto )
+                        continuar = widget.newButton
+                        {
+                        left = 85,
+                        top = 270,
+                        label = "Continuar",
+                        onEvent = siguiente,
+                        shape="roundedRect",
+                        width = 150,
+                        height = 40,
+                        cornerRadius = 10,
+                        fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+                        labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+                        }
+                        screenGroup:insert( continuar )
+                    end
                 end
             end
         end
@@ -393,7 +523,7 @@ local function onGetObjects( event )
         screenGroup:insert( b2 )
 
 
-        local function boton3(event) 
+        function boton3(event) 
             if event.phase == "ended" then
                 
                 Runtime:removeEventListener("enterFrame", checkTime)
@@ -403,6 +533,13 @@ local function onGetObjects( event )
                     pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
                     pant:setFillColor(0, 0, 0, 0.9)
                     screenGroup:insert( pant )
+                    b1:setEnabled( false )
+                    b2:setEnabled( false )
+                    b3:setEnabled( false )
+                    bexit:setEnabled( false )
+                    if botonAudioActivo == true then
+                        play:removeEventListener("tap", playAudio)
+                    end
                     palomita = display.newImageRect("paloma.png",60,60)
                     palomita.x = centrox
                     palomita.y = 200
@@ -424,29 +561,67 @@ local function onGetObjects( event )
                     }
                     screenGroup:insert( continuar )
                 else
-                    pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
-                    pant:setFillColor(0, 0, 0, 0.9)
-                    screenGroup:insert( pant )
-                    tache = display.newImageRect("tache.png",60,60)
-                    tache.x = centrox
-                    tache.y = 200
-                    screenGroup:insert( tache )
-                    incorrecto = display.newText("Incorrecto", centrox, 130, native.systemFont, 38)
-                    screenGroup:insert( incorrecto )
-                    continuar = widget.newButton
-                    {
-                    left = 85,
-                    top = 270,
-                    label = "Continuar",
-                    onEvent = siguiente,
-                    shape="roundedRect",
-                    width = 150,
-                    height = 40,
-                    cornerRadius = 10,
-                    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
-                    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
-                    }
-                    screenGroup:insert( continuar )
+                    b1:setEnabled( false )
+                    b2:setEnabled( false )
+                    b3:setEnabled( false )
+                    bexit:setEnabled( false )
+                    if botonAudioActivo == true then
+                        play:removeEventListener("tap", playAudio)
+                    end
+                    local mydata = require( "mydata" )
+                    mydata.lives=mydata.lives-1
+                    if mydata.lives == 0 then
+                        local mydata = require( "mydata" )
+                        pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
+                        pant:setFillColor(0, 0, 0, 0.9)
+                        screenGroup:insert( pant )
+                        aacaba2 = display.newText("Oportunidades", centrox, 100, native.systemFont, 38)
+                        screenGroup:insert( acaba2 )
+                        acaba3 = display.newText("Agotadas!", centrox, 150, native.systemFont, 38)
+                        screenGroup:insert( acaba3 )
+                        sad = display.newImageRect("sad.png",150,150)
+                        sad.x = centrox
+                        sad.y = 270
+                        screenGroup:insert( sad )
+                        continuar = widget.newButton
+                        {
+                        left = 85,
+                        top = 370,
+                        label = "Continuar",
+                        onEvent = exit,
+                        shape="roundedRect",
+                        width = 150,
+                        height = 40,
+                        cornerRadius = 10,
+                        fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+                        labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+                        }
+                        screenGroup:insert( continuar )
+                    else
+                        pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
+                        pant:setFillColor(0, 0, 0, 0.9)
+                        screenGroup:insert( pant )     
+                        tache = display.newImageRect("tache.png",60,60)
+                        tache.x = centrox
+                        tache.y = 200
+                        screenGroup:insert( tache )
+                        incorrecto = display.newText("Incorrecto", centrox, 130, native.systemFont, 38)
+                        screenGroup:insert( incorrecto )
+                        continuar = widget.newButton
+                        {
+                        left = 85,
+                        top = 270,
+                        label = "Continuar",
+                        onEvent = siguiente,
+                        shape="roundedRect",
+                        width = 150,
+                        height = 40,
+                        cornerRadius = 10,
+                        fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+                        labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+                        }
+                        screenGroup:insert( continuar )
+                    end
                 end
             end
         end
@@ -495,8 +670,8 @@ function scene:show( event )
     elseif ( phase == "did" ) then
         -- Example: start timers, begin animation, play audio, etc.
         local startTime = os.time()
-        local levelTime = 15
-        displayTime = display.newText(levelTime, centrox-(centrox/2), 82, native.systemFont, 20)
+        local levelTime = 10
+        displayTime = display.newText(levelTime, centrox-(centrox/1.7), 82, native.systemFont, 20)
         displayTime:setFillColor(0, 0, 0)
         screenGroup:insert( displayTime )
         local acabo = false
@@ -510,8 +685,70 @@ function scene:show( event )
             displayTime.text = levelTime - (now - startTime)
             --progressView:setProgress( (now-startTime)/15 )
             if ( now > startTime + levelTime ) then
-                acabo = true
-                displayTime.isVisible=false
+                b1:setEnabled( false )
+                b2:setEnabled( false )
+                b3:setEnabled( false )
+                bexit:setEnabled( false )
+                if botonAudioActivo == true then
+                    play:removeEventListener("tap", playAudio)
+                end
+                local mydata = require( "mydata" )
+                mydata.lives=mydata.lives-1 
+                if mydata.lives <= 0 then
+                    pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
+                    pant:setFillColor(0, 0, 0, 0.9)
+                    screenGroup:insert( pant )
+                    acaba2 = display.newText("Oportunidades", centrox, 100, native.systemFont, 38)
+                    screenGroup:insert( acaba2 )
+                    acaba3 = display.newText("Agotadas!", centrox, 150, native.systemFont, 38)
+                    screenGroup:insert( acaba3 )
+                    sad = display.newImageRect("sad.png",150,150)
+                    sad.x = centrox
+                    sad.y = 270
+                    screenGroup:insert( sad )
+                    continuar = widget.newButton
+                    {
+                    left = 85,
+                    top = 370,
+                    label = "Continuar",
+                    onEvent = exit,
+                    shape="roundedRect",
+                    width = 150,
+                    height = 40,
+                    cornerRadius = 10,
+                    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+                    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+                    }
+                    screenGroup:insert( continuar )
+                    Runtime:removeEventListener("enterFrame", checkTime)
+                else
+                    acabo = true
+                    displayTime.isVisible=false
+                    pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
+                    pant:setFillColor(0, 0, 0, 0.9)
+                    screenGroup:insert( pant )     
+                    reloj = display.newImageRect("time.png",150,150)
+                    reloj.x = centrox
+                    reloj.y = 250
+                    screenGroup:insert( reloj )
+                    acaba = display.newText("Tiempo agotado!", centrox, 130, native.systemFont, 38)
+                    screenGroup:insert( acaba )
+                    continuar = widget.newButton
+                    {
+                    left = 85,
+                    top = 370,
+                    label = "Continuar",
+                    onEvent = siguiente,
+                    shape="roundedRect",
+                    width = 150,
+                    height = 40,
+                    cornerRadius = 10,
+                    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+                    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+                    }
+                    screenGroup:insert( continuar )
+                    Runtime:removeEventListener("enterFrame", checkTime)
+                end
             end
         end
         Runtime:addEventListener("enterFrame", checkTime)
