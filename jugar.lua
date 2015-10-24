@@ -3,6 +3,7 @@ local widget = require( "widget" )
 local parse = require( "mod_parse" )
 local widget = require( "widget" )
 local scene = composer.newScene()
+--
 parse:init({ 
   appId = "IBEd9JQGfKtJHTCPzXddQsVT6aQUn8Q0LOe8wR5i", 
   apiKey = "lyhtF5oj1K6Ui0I9EVPDwr7CJ1e5mLGdIHn2HKiI"
@@ -10,6 +11,11 @@ parse:init({
 local puntuacionreal = 0
 function scene:create( event )
 local screenGroup = self.view
+
+
+--composer.removeScene( "seleccionCategoria", true )
+--composer.removeHidden( true )
+
 centrox = display.contentCenterX
 centroy = display.contentCenterY
 local background = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
@@ -38,16 +44,6 @@ screenGroup:insert( puntuacion )
 local puntuacionNum = display.newText("0", centrox+(centrox/1.8), 80, native.systemFont, 20)
 puntuacionNum:setFillColor(0, 0, 0)
 screenGroup:insert( puntuacionNum )
---[[progressView = widget.newProgressView
-{
-    left = 50,
-    top = 100,
-    width = 220,
-    height = 50,
-    isAnimated = false
-}
-screenGroup:insert( progressView )
---]]
 
 local function exit(event) 
     if event.phase == "ended" then
@@ -99,408 +95,18 @@ end
             labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
         }
         screenGroup:insert( bexit )
-
+------------------------------------
 local function siguiente (event)
     if ( "ended" == event.phase ) then
-        if correcto ~= nil then
-            correcto:removeSelf()
-            correcto=nil
-        end
-        if incorrecto ~= nil then
-            incorrecto:removeSelf()
-            incorrecto=nil
-        end
-        pant:removeSelf()
-        pant=nil
-        if palomita ~= nil then
-            palomita:removeSelf()
-            palomita=nil
-        end
-        continuar:removeSelf()
-        continuar=nil
-        if tache ~= nil then
-            tache:removeSelf()
-            tache=nil
-        end
-        if b1 ~= nil then
-            b1:removeSelf()
-            b1=nil
-        end
-        if b2 ~= nil then
-            b2:removeSelf()
-            b2=nil
-        end
-        if b3 ~= nil then
-            b3:removeSelf()
-            b3=nil
-        end
-        pregunta:removeSelf()
-        pregunta=nil
-        -----------------------------------------
-        local function onGetObjects( event )
-    if not event.error then
-        print( #event.results )
-        local num = math.random(#event.results)
-        print(num)
-        print(event.results[num].pregunta)
-        local rand1 = math.random(3)
-        local rand2 = math.random(3)
-        local rand3 = math.random(3)
-        while rand1==rand2 or rand2==rand3 or rand1 == rand3 do
-            rand1 = math.random(3)
-            rand2 = math.random(3)
-            rand3 = math.random(3)
-        end
-     
-        print("Random1: "..rand1.." Random2: "..rand2.." Random3: "..rand3)
-        local res1, res2, res3
-        if rand1 == 1 then
-            res1 = event.results[num].respuesta1
-        elseif rand1 == 2 then
-            res1 = event.results[num].respuesta2
-        elseif rand1 == 3 then
-            res1 = event.results[num].respuesta3
-        end
-     
-        if rand2 == 1 then
-            res2 = event.results[num].respuesta1
-        elseif rand2 == 2 then
-            res2 = event.results[num].respuesta2
-        elseif rand2 == 3 then
-            res2 = event.results[num].respuesta3
-        end
-     
-        if rand3 == 1 then
-            res3 = event.results[num].respuesta1
-        elseif rand3 == 2 then
-            res3 = event.results[num].respuesta2
-        elseif rand3 == 3 then
-            res3 = event.results[num].respuesta3
-        end
-     
-        local correcta = event.results[num].correcta
+        composer.removeScene( "seleccionCategoria")
+        composer.gotoScene("seleccionCategoria")
+    end
+end
+-------------------------------------
+--local queryTable = { }
+--parse:getObjects( "preguntas", queryTable, onGetObjects )
 
-        if event.results[num].archivo~=nil then
-            pregunta = display.newText(event.results[num].pregunta, centrox, 185, native.systemFont, 18)
-            pregunta:setFillColor(0,0,0)
-            screenGroup:insert(pregunta)
-            local url = event.results[num].archivo.url
-            local name = event.results[num].archivo.name
-            function GetFileExtension(url)
-                local str = url
-                    local temp = ""
-                    local result = "." 
-
-                    for i = str:len(), 1, -1 do
-                        if str:sub(i,i) ~= "." then
-                            temp = temp..str:sub(i,i)
-                        else
-                        break
-                        end
-                    end
-                    for j = temp:len(), 1, -1 do
-                        result = result..temp:sub(j,j)
-                    end
-                return result
-            end
-            local ext=GetFileExtension(name)
-            local function onImagen(event)
-                imagen = event.target
-                imagen.x=centrox
-                imagen.y=centroy
-                imagen.width=175
-                imagen.height=150
-                screenGroup:insert( imagen )
-            end
-
-            if ext==".png" or ext==".jpg" or ext==".jpeg" then
-                display.loadRemoteImage(url,"GET", onImagen, name)
-            elseif ext==".wav" or ext==".mp3" then
-                print("sonido: "..num)
-                local function networkListener( event )
-                    if ( event.phase == "ended" ) then
-                        print( "Entra correctamente!!!" )
-                        sound = audio.loadSound(event.response.filename, system.TemporaryDirectory )
-                    end
-                end
-
-                local params = {}
-                params.progress = true
-
-                network.download(url,"GET",networkListener,params,name,system.TemporaryDirectory)
-
-                play = display.newImageRect("play.png", 70, 70)
-                play.x=centrox
-                play.y=centroy
-                screenGroup:insert( play )
-                local function playAudio()
-                    audio.play( sound )
-                    --media.playSound( "audio.wav", system.TemporaryDirectory )
-                end
-                play:addEventListener("tap", playAudio)
-            end
-        else
-            pregunta = display.newText(event.results[num].pregunta, centrox, 260, native.systemFont, 18)
-            pregunta:setFillColor(0,0,0)
-            screenGroup:insert(pregunta)
-        end
-
-
-        local function boton1(event) 
-            if event.phase == "ended" then
-            if play~=nil then
-                play:removeSelf()
-                play=nil
-            end
-            if imagen~=nil then
-                imagen:removeSelf()
-                imagen=nil
-            end
-                --print("Res1 "..res1.." correcta "..correcta)
-                displayTime.isVisible=false
-                --progressView:removeSelf()
-                Runtime:removeEventListener("enterFrame", checkTime)
-                if res1 == correcta then
-                    puntuacionreal=puntuacionreal+1
-                    puntuacionNum.text=puntuacionreal
-                    pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
-                    pant:setFillColor(0, 0, 0, 0.9)
-                    screenGroup:insert( pant )
-                    palomita = display.newImageRect("paloma.png",60,60)
-                    palomita.x = centrox
-                    palomita.y = 200
-                    screenGroup:insert( palomita )
-                    correcto = display.newText("Correcto", centrox, 130, native.systemFont, 38)
-                    screenGroup:insert( correcto )
-                    continuar = widget.newButton
-                    {
-                    left = 85,
-                    top = 270,
-                    label = "Continuar",
-                    onEvent = siguiente,
-                    shape="roundedRect",
-                    width = 150,
-                    height = 40,
-                    cornerRadius = 10,
-                    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
-                    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
-                    }
-                    screenGroup:insert( continuar )
-                else
-                    pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
-                    pant:setFillColor(0, 0, 0, 0.9)
-                    screenGroup:insert( pant )
-                    tache = display.newImageRect("tache.png",60,60)
-                    tache.x = centrox
-                    tache.y = 200
-                    screenGroup:insert( tache )
-                    incorrecto = display.newText("Incorrecto", centrox, 130, native.systemFont, 38)
-                    screenGroup:insert( incorrecto )
-                    continuar = widget.newButton
-                    {
-                    left = 85,
-                    top = 270,
-                    label = "Continuar",
-                    onEvent = siguiente,
-                    shape="roundedRect",
-                    width = 150,
-                    height = 40,
-                    cornerRadius = 10,
-                    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
-                    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
-                    }
-                    screenGroup:insert( continuar )
-                end
-            end
-        end
-
-        b1 = widget.newButton
-        {
-            left = 60,
-            top = 380,
-            id = "button1",
-            label = res1,
-            onEvent = boton1,
-            shape="roundedRect",
-            width = 200,
-            height = 40,
-            cornerRadius = 3,
-            fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
-            labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
-        }
-        screenGroup:insert( b1 )
-
-        local function boton2(event) 
-            if event.phase == "ended" then
-            if play~=nil then
-                play:removeSelf()
-                play=nil
-            end
-            if imagen~=nil then
-                imagen:removeSelf()
-                imagen=nil
-            end
-                Runtime:removeEventListener("enterFrame", checkTime)
-                if res2 == correcta then
-                    puntuacionreal=puntuacionreal+1
-                    puntuacionNum.text=puntuacionreal
-                    pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
-                    pant:setFillColor(0, 0, 0, 0.9)
-                    screenGroup:insert( pant )
-                    palomita = display.newImageRect("paloma.png",60,60)
-                    palomita.x = centrox
-                    palomita.y = 200
-                    screenGroup:insert( palomita )
-                    correcto = display.newText("Correcto", centrox, 130, native.systemFont, 38)
-                    screenGroup:insert( correcto )
-                    continuar = widget.newButton
-                    {
-                    left = 85,
-                    top = 270,
-                    label = "Continuar",
-                    onEvent = siguiente,
-                    shape="roundedRect",
-                    width = 150,
-                    height = 40,
-                    cornerRadius = 10,
-                    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
-                    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
-                    }
-                    screenGroup:insert( continuar )
-                else
-                    pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
-                    pant:setFillColor(0, 0, 0, 0.9)
-                    screenGroup:insert( pant )
-                    tache = display.newImageRect("tache.png",60,60)
-                    tache.x = centrox
-                    tache.y = 200
-                    screenGroup:insert( tache )
-                    incorrecto = display.newText("Incorrecto", centrox, 130, native.systemFont, 38)
-                    screenGroup:insert( incorrecto )
-                    continuar = widget.newButton
-                    {
-                    left = 85,
-                    top = 270,
-                    label = "Continuar",
-                    onEvent = siguiente,
-                    shape="roundedRect",
-                    width = 150,
-                    height = 40,
-                    cornerRadius = 10,
-                    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
-                    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
-                    }
-                    screenGroup:insert( continuar )
-                end
-            end
-        end
-
-
-        b2 = widget.newButton
-        {
-            left = 60,
-            top = 430,
-            id = "button2",
-            label = res2,
-            onEvent = boton2,
-            shape="roundedRect",
-            width = 200,
-            height = 40,
-            cornerRadius = 3,
-            fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
-            labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
-        }
-        screenGroup:insert( b2 )
  
-
-        local function boton3(event) 
-            if event.phase == "ended" then
-            if play~=nil then
-                play:removeSelf()
-                play=nil
-            end
-            if imagen~=nil then
-                imagen:removeSelf()
-                imagen=nil
-            end
-                Runtime:removeEventListener("enterFrame", checkTime)
-                if res3 == correcta then
-                    puntuacionreal=puntuacionreal+1
-                    puntuacionNum.text=puntuacionreal
-                    pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
-                    pant:setFillColor(0, 0, 0, 0.9)
-                    screenGroup:insert( pant )
-                    palomita = display.newImageRect("paloma.png",60,60)
-                    palomita.x = centrox
-                    palomita.y = 200
-                    screenGroup:insert( palomita )
-                    correcto = display.newText("Correcto", centrox, 130, native.systemFont, 38)
-                    screenGroup:insert( correcto )
-                    continuar = widget.newButton
-                    {
-                    left = 85,
-                    top = 270,
-                    label = "Continuar",
-                    onEvent = siguiente,
-                    shape="roundedRect",
-                    width = 150,
-                    height = 40,
-                    cornerRadius = 10,
-                    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
-                    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
-                    }
-                    screenGroup:insert( continuar )
-                else
-                    pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
-                    pant:setFillColor(0, 0, 0, 0.9)
-                    screenGroup:insert( pant )
-                    tache = display.newImageRect("tache.png",60,60)
-                    tache.x = centrox
-                    tache.y = 200
-                    screenGroup:insert( tache )
-                    incorrecto = display.newText("Incorrecto", centrox, 130, native.systemFont, 38)
-                    screenGroup:insert( incorrecto )
-                    continuar = widget.newButton
-                    {
-                    left = 85,
-                    top = 270,
-                    label = "Continuar",
-                    onEvent = siguiente,
-                    shape="roundedRect",
-                    width = 150,
-                    height = 40,
-                    cornerRadius = 10,
-                    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
-                    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
-                    }
-                    screenGroup:insert( continuar )
-                end
-            end
-        end
-
-        b3 = widget.newButton
-        {
-            left = 60,
-            top = 480,
-            id = "button1",
-            label = res3,
-            onEvent = boton3,
-            shape="roundedRect",
-            width = 200,
-            height = 40,
-            cornerRadius = 3,
-            fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
-            labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
-        }
-        screenGroup:insert( b3 )
-    end
-end
-local queryTable = { }
-parse:getObjects( "preguntas", queryTable, onGetObjects )
-
-    end
-
-end
 
 
 
@@ -522,8 +128,7 @@ local function onGetMe( event )
     end
 end
 parse:getMe( onGetMe )
---[[local nombre = display.newText("Ricardo Hinojosa", centrox, 140, native.systemFont, 18)
-        nombre:setFillColor(0,0,0)]]
+
 
 
 local function onGetObjects( event )
@@ -883,7 +488,11 @@ local function onGetObjects( event )
         screenGroup:insert( b3 )
     end
 end
-local queryTable = { }
+local mydata = require( "mydata" )
+local categoria = mydata.categoria
+local queryTable = { 
+    ["where"] = { ["categoria"] = categoria }
+}
 parse:getObjects( "preguntas", queryTable, onGetObjects )
     
 function onKeyEvent(event)
@@ -927,18 +536,7 @@ function scene:show( event )
         end
         Runtime:addEventListener("enterFrame", checkTime)
         ---------------------
-        imagens.rotation = -360
-        local reverse = 1
-        local function rockRect()
-            if ( reverse == 0 ) then
-                reverse = 1
-                transition.to( imagens, { rotation=-360, time=1000, transition=easing.inOutCubic } )
-            else
-                reverse = 0
-                transition.to( imagens, { rotation=360, time=1000, transition=easing.inOutCubic } )
-            end
-        end
-        tiempoEspera=timer.performWithDelay( 900, rockRect, 0 )
+
     end
 end
 
@@ -958,55 +556,7 @@ end
 function scene:destroy( event )
     local sceneGroup = self.view
     background:removeSelf()
-    background=nil
-    text:removeSelf()
-    text=nil
-    logo:removeSelf()
-    logo=nil
-    imagens:removeSelf()
-    imagens=nil
-    estrella:removeSelf()
-    estrella=nil
-    puntuacion:removeSelf()
-    puntuacion=nil
-    --progressView:removeSelf()
-    --progressView=nil
-    myRoundedRect:removeSelf()
-    myRoundedRect=nil
-    nombre:removeSelf()
-    nombre=nil
-    pregunta:removeSelf()
-    pregunta=nil
-    if correcto ~= nil then
-    correcto:removeSelf()
-    correcto=nil
-    end
-    if incorrecto ~= nil then
-    incorrecto:removeSelf()
-    incorrecto=nil
-    end
-    b1:removeSelf()
-    b1=nil
-    b2:removeSelf()
-    b2=nil
-    b3:removeSelf()
-    b3=nil
-    pant:removeSelf()
-    pant=nil
-    palomita:removeSelf()
-    palomita=nil
-    continuar:removeSelf()
-    continuar=nil
-    tache:removeSelf()
-    tache=nil
-    bexit:removeSelf()
-    bexit=nil
-    puntuacionNum:removeSelf()
-    puntuacionNum=nil
-    imagen:removeSelf()
-    imagen=nil
-    play:removeSelf()
-    play=nil
+    
 end
 
 ---------------------------------------------------------------------------------
