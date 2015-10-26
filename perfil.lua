@@ -203,7 +203,7 @@ parse:getMe( onGetMe )
 <<<<<<< HEAD
             img1 = display.newImageRect( "img_perfil.png", 180, 180 )
 =======
-            img1 = display.newImageRect( "Icon.png", 180, 180 )
+            
 >>>>>>> 95932ec192281cb38298b3e66a301f020f47bc46
             img1.x = _W*0.5
             img1.y = _H*0.23
