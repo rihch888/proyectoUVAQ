@@ -366,9 +366,3 @@ scene:addEventListener( "hide", scene )
 scene:addEventListener( "destroy", scene )
 
 -- -------------------------------------------------------------------------------
-
-<<<<<<< HEAD
-return scene
-=======
-return scene
->>>>>>> 95932ec192281cb38298b3e66a301f020f47bc46
