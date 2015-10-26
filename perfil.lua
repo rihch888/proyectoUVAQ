@@ -200,7 +200,7 @@ parse:getMe( onGetMe )
         photo.y=_H*0.2
         photo:addEventListener( "touch", menuImg )
         else
-            img1 = display.newImageRect( "img_perfil.png", 180, 180 )
+            img1 = display.newImageRect( "Icon.png", 180, 180 )
             img1.x = _W*0.5
             img1.y = _H*0.23
             img1:addEventListener( "touch", menuImg )
