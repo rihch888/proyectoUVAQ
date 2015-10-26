@@ -83,7 +83,7 @@ function scene:create( event )
 
     local function perf( event )
         if ( "ended" == event.phase ) then
-            --composer.gotoScene("perfil")
+            composer.gotoScene("perfil")
         end
     end
     
