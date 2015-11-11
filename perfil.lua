@@ -23,139 +23,110 @@ _H = display.contentHeight
 
 -- "scene:create()"
 function scene:create( event )
-
     local sceneGroup = self.view
+      background = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
+    background:setFillColor(1, 1, 1)
+    sceneGroup:insert( background )
 
-    -- Initialize the scene here.
-    -- Example: add display objects to "sceneGroup", add touch listeners, etc.
-end
+    local photoAvatar = nil
+    local fondo = nil
+    local p = false
+    local filemeta = nil
+   -- phase = event.phase
+    userObjId = nil
+    widget = require( "widget" )
+    --textF1 = nil
+    fileObjId = nil
+    --carga = nil
+    --fondo = nil 
+    --button1 = nil
+    --photo = nil
+    --img1 = nil
+    --textoGuardar = nil
 
-
--- "scene:show()"
-function scene:show( event )
-
-    local sceneGroup = self.view
-    local phase = event.phase
-    local userObjId = nil
-    local widget = require( "widget" )
-    local textF1
-    local fileObjId = nil
-    local carga
-    local fondo
-    local button1
-    local photo
-    local img1
-    local textoGuardar
-
-
-    if ( phase == "will" ) then
-        -- Called when the scene is still off screen (but is about to come on screen).
-       
-    elseif ( phase == "did" ) then
-        -- Called when the scene is now on screen.
-        -- Insert code here to make the scene come alive.
-        -- Example: start timers, begin animation, play audio, etc.
-        function onSelected2(event)
-  local path = system.pathForFile( "avatar.jpg", system.TemporaryDirectory)
-    local fh, reason = io.open( path, "r" )
-      if fh then
-        local img = display.newImageRect(path, 150, 80)
-        img.x=display.contentCenterX*0.5
-        img.y=display.contentCenterY*0.5
-        img.x=_W*0.5
-        img.y=_H*0.2
-      end
-end
-
-local function onSelected( event )
-    local path = system.pathForFile( "avatar.jpg", system.TemporaryDirectory)
-    local fh, reason = io.open( path, "r" )
-    if fh then
-        local photo = display.newImageRect(path, 150, 80)
-        photo.x=_W*0.5
-        photo.y=_H*0.2
+    function onSelected2(event)
+        path = system.pathForFile( "avatar.jpg", system.TemporaryDirectory)
+        local fh, reason = io.open( path, "r" )
+        if fh then
+            p = false
+            photoAvatar:removeSelf()
+            photoAvatar = nil
+            photoAvatar = display.newImageRect(path, 150, 80)
+            photoAvatar.x=display.contentCenterX*0.5
+            photoAvatar.y=display.contentCenterY*0.5
+            photoAvatar.x=_W*0.5
+            photoAvatar.y=_H*0.2
+            sceneGroup:insert(photoAvatar)
+        end
     end
-end
 
-        local function onComplete( event )
-   if event.action == "clicked" then
-        local i = event.index
-        if i == 1 then
+    local function onSelected( event )
+    path = system.pathForFile( "avatar.jpg", system.TemporaryDirectory)
+    local fh, reason = io.open( path, "r" )
+        if fh then
+            p = false
+            photoAvatar:removeSelf()
+            photoAvatar = nil
+            photoAvatar = display.newImageRect(path, 150, 80)
+            photoAvatar.x=_W*0.5
+            photoAvatar.y=_H*0.2
+            sceneGroup:insert(photoAvatar)
+        end
+    end
+
+    local function onComplete( event )
+        if event.action == "clicked" then
+            local i = event.index
+            if i == 1 then
   ------------- Do nothing; dialog will simply dismiss
                 if media.hasSource( media.Camera ) then
-            media.capturePhoto( 
+                media.capturePhoto( 
                 {
                 destination = { baseDir=system.TemporaryDirectory, filename="avatar.jpg"}, 
                 listener=onSelected 
                 } )
-        else
-            native.showAlert( "Corona", "This device does not have a camera.", { "OK" } )
-        end
+                else
+                native.showAlert( "Corona", "This device does not have a camera.", { "OK" } )
+            end
 -----------------------------------------------
-        elseif i == 2 then
+            elseif i == 2 then
             -- Open URL if "Learn More" (second button) was clicked
             --system.openURL( "http://www.coronalabs.com" )
 
              if media.hasSource( media.PhotoLibrary ) then
-        media.selectPhoto(
-    {
+            media.selectPhoto(
+        {
         mediaSource = media.SavedPhotosAlbum,
         listener = onComplete, 
         destination = { baseDir=system.TemporaryDirectory, filename="avatar.jpg"},
         listener = onSelected2
-    })
+        })
         else
             native.showAlert( "Corona", "This device does not have a photo library.", { "OK" } )
-    end
+        end
             -------------------------
+            end
+        end
+        end
+
+    local function onGetMe( event )
+        if event.code == parse.EXPIRED then
+            print( "Session expired.  Log in.")
+        else
+        print(event.response.objectId)
+        textF1.text = event.response.nombre
+        userObjId = event.response.objectId
         end
     end
-end
 
---[[
- local function onLoginUser( event )
-            if not event.error then
-                userObjId = event.response.objectId
-                print( event.response.objectId )
-                --check if user is verified
-                if event.response.emailVerified then
-                    --user is verifiedprint(fileObjId)
-                end
-            end
+    parse:getMe( onGetMe )
 
-                   local function onGetUser( event )
-  if not event.error then
-    textF1.text = event.response.nombre
-  end
-end
-
-parse:getUser( userObjId, onGetUser )
-         
-    end
-        parse:loginUser( { ["username"] = "bozz-9@hotmail.com", ["password"] = "1234" }, onLoginUser )
-]]
-local function onGetMe( event )
-  if event.code == parse.EXPIRED then
-    print( "Session expired.  Log in.")
-  else
-    print("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC")
-    print( "Hello", event.response.username )
-    print("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC")
-    textF1.text = event.response.nombre
-  end
-end
-
-parse:getMe( onGetMe )
-
--- Show alert with two buttons
     local function menuImg(event)
         if (event.phase == "ended") then
-            local alert = native.showAlert( "Seleccionar imagen", "",{ "Tomar foto", "Abrir galeria" }, onComplete )
+            alert = native.showAlert( "Seleccionar imagen", "",{ "Tomar foto", "Abrir galeria" }, onComplete )
         
         end
     end
- 
-   
 
     local opcionesTexto = {
         text ="Nombre de usuario", 
@@ -166,64 +137,63 @@ parse:getMe( onGetMe )
     }
 
 
-    local texto1 = display.newText(opcionesTexto)
+    texto1 = display.newText(opcionesTexto)
     texto1:setFillColor(0,0,0)
 
     textF1 = native.newTextField( _W*0.5,_H*0.6 , 300, 40 )
     --textF1.align = "center"
     textF1:setTextColor( 0, 0, 0 )
-    
+    sceneGroup:insert(texto1)
 
-   
-     local opcionesTexto = {
+    local opcionesTexto = {
         text ="Nueva contraseña", 
         font = native.systemFont, 
         fontSize =20,
         x=  _W*0.5,
         y=  _H*0.7
     }
-    local texto2 = display.newText(opcionesTexto)
+    texto2 = display.newText(opcionesTexto)
     texto2:setFillColor(0,0,0)
-    local textF2 = native.newTextField( _W*0.5,_H*0.8 , 300, 40 )
+    textF2 = native.newTextField( _W*0.5,_H*0.8 , 300, 40 )
     --textF2.align = "center"
     textF2:setTextColor( 0, 0, 0 )
     --textF2.isSecure = true
-
+    sceneGroup:insert(texto2)
 
     
 
-    local path = system.pathForFile( "avatar.jpg", system.TemporaryDirectory)
+    path = system.pathForFile( "avatar.jpg", system.TemporaryDirectory)
     local fh, reason = io.open( path, "r" )
     if fh then
-        photo = display.newImageRect(path, 150, 80)
-        photo.x=_W*0.5
-        photo.y=_H*0.2
-        photo:addEventListener( "touch", menuImg )
+        photoAvatar = display.newImageRect(path, 150, 80)
+        photoAvatar.x=_W*0.5
+        photoAvatar.y=_H*0.2
+        photoAvatar:addEventListener( "touch", menuImg )
+        sceneGroup:insert(photoAvatar)
         else
-            img1 = display.newImageRect( "img_perfil.png", 180, 180 )
-            img1.x = _W*0.5
-            img1.y = _H*0.23
-            img1:addEventListener( "touch", menuImg )
+            photoAvatar = display.newImageRect( "avatar.png", 180, 180 )
+            photoAvatar.x = _W*0.5
+            photoAvatar.y = _H*0.23
+            photoAvatar:addEventListener( "touch", menuImg )
+            sceneGroup:insert(photoAvatar)
+            p = true
+
     end
-    
+
     local function guardar( ... )
        
-
+        
 -- Function to handle button events
     local function handleButtonEvent( event )
 
         if ( "ended" == event.phase ) then
-            print( "Button was pressed and released" )
             button1:removeEventListener("touch")
             textF2.isVisible = false
             textF1.isVisible = false
-            if img1 then
-                img1:removeEventListener( "touch", menuImg )
+            if photoAvatar then
+                photoAvatar:removeEventListener( "touch", menuImg )
             end
-            
-            if photo then
-                photo:removeEventListener( "touch", menuImg )
-            end
+
         local function actualizar( )
             local function onUpdateUser( event )
              if not event.error then
@@ -232,14 +202,18 @@ parse:getMe( onGetMe )
             end
 
             local dataTable = { ["nombre"] = textF1.text, ["password"] = textF2.text }
-             --local dataTable = { ["nombre"] = "bossuet", ["password"] = "1234" }
-             
-            --local dataTable = { ["nombre"] = "bossuet", ["password"] = "1234"}
+            --local dataTable = { ["nombre"] = "Bossuet", ["password"] = "123" }
+
             parse:updateUser( userObjId, dataTable, onUpdateUser )
         end
         actualizar()
 --------------------------------------
-        local filemeta = {["filename"] = "avatar.jpg", ["baseDir"] = system.TemporaryDirectory}
+        
+        if(p == false)then
+            filemeta = {["filename"] = "avatar.jpg", ["baseDir"] = system.TemporaryDirectory}
+        else
+            filemeta = {["filename"] = "avatar.png", ["baseDir"] = system.ResourceDirectory}
+        end
         --local filemeta = {["filename"] = "subir.jpg", ["baseDir"] = system.ResourceDirectory}
     local function onFileUploaded(event)
       if not event.error then
@@ -256,19 +230,15 @@ parse:getMe( onGetMe )
         parse:linkFile(parse.USER, userObjId, "avatar", fileObjId, onFileLinked)
             --carga:removeSelf()
             fondo:removeSelf()
+            fondo = nil
             textoGuardar:removeSelf()
             button1:addEventListener("touch")
             textF2.isVisible = true
             textF1.isVisible = true
-          if img1 then
-                img1:addEventListener( "touch", menuImg )
-            elseif photo then
-                photo:addEventListener( "touch", menuImg )
+            button1.isVisible = true
+          if photoAvatar then
+                photoAvatar:addEventListener( "touch", menuImg )
             end
-        --print("[][][][][][][][][][][][]")
-          --  print("----Funciona------")
-            --print("[][][][][][][][][][][][]")
-    
       end
     end
     parse:uploadFile(filemeta, onFileUploaded)
@@ -276,9 +246,11 @@ parse:getMe( onGetMe )
     fondo = display.newRect(display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight )
     fondo:setFillColor(1,1,1)
     fondo.alpha=0.8
-    --carga = display.newImageRect('Icon-72.png', 160, 150)
-    --carga.x=_W*0.5
-    --carga.y=_H*0.5
+    sceneGroup:insert(fondo)
+
+    button1.isVisible = false
+
+
 
     local opcionesTexto2 = {
         text ="Guardando...", 
@@ -290,14 +262,12 @@ parse:getMe( onGetMe )
 
     textoGuardar = display.newText(opcionesTexto2)
     textoGuardar:setTextColor( 0, 0, 0 )
+    sceneGroup:insert(textoGuardar)
     
-    --parse:updateUser( userObjId, dataTable1, onFileUploaded )
 --------------------
 
         end
     end
-
--- Create the widget
     button1 = widget.newButton
     {
     label = "button",
@@ -305,10 +275,11 @@ parse:getMe( onGetMe )
     emboss = false,
     --properties for a rounded rectangle button...
     shape="roundedRect",
-    width = 200,
+    width = 180,
     height = 40,
-    fillColor = { default={ 0, 0, 1, 1 }, over={ 0, 0, 0, 0.4 } },
-    labelColor = { default={ 1, 1, 1 }, over={ 0, 0, 1, 1 } }
+    cornerRadius = 3,
+    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
     }
 
 -- Center the button
@@ -321,11 +292,72 @@ parse:getMe( onGetMe )
 
     guardar()
 
-    
-
-
-
+--[[
+    local function regresar( event )
+        if ( "ended" == event.phase ) then
+        composer.removeScene("perfil")
+        composer.gotoScene("menuSesion")
+        end
     end
+
+    button2 = widget.newButton
+    {
+    label = "button2",
+    onEvent = regresar,
+    emboss = false,
+    --properties for a rounded rectangle button...
+    shape="roundedRect",
+    width = 180,
+    height = 40,
+    cornerRadius = 3,
+    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+    }
+
+-- Center the button
+    button2.x = _W*0.5
+    button2.y = _H*0.99
+
+-- Change the button's label text
+    button2:setLabel( "Regresar")
+    sceneGroup:insert(button2)
+    --]]
+    -------------------------------------
+
+    function onKeyEvent(event)
+    if ( event.keyName == "back" and event.phase == "up") then
+        composer.removeScene("perfil")
+        composer.gotoScene("menuSesion")
+        return true
+    end
+    return false
+    end
+
+    Runtime:addEventListener( "key", onKeyEvent )
+
+    ------------------^boton guardar
+    
+end
+
+
+-- "scene:show()"
+function scene:show( event )
+    local sceneGroup = self.view
+
+    -- Initialize the scene here.
+    -- Example: add display objects to "sceneGroup", add touch listeners, etc.
+   
+
+
+    if ( phase == "will" ) then
+        -- Called when the scene is still off screen (but is about to come on screen).
+       
+    elseif ( phase == "did" ) then
+        -- Called when the scene is now on screen.
+        -- Insert code here to make the scene come alive.
+        -- Example: start timers, begin animation, play audio, etc.
+    
+   end
 end
 
 
@@ -354,6 +386,26 @@ function scene:destroy( event )
     -- Called prior to the removal of scene's view ("sceneGroup").
     -- Insert code here to clean up the scene.
     -- Example: remove display objects, save state, etc.
+    
+    background:removeSelf()
+    --img:removeSelf()
+    --photo:removeSelf()
+    texto1:removeSelf()
+    texto2:removeSelf()
+    --fondo:removeSelf()
+    --textoGuardar:removeSelf()
+
+    if(photoAvatar~= nil)then
+        photoAvatar:removeSelf()
+    end
+    
+    button1:removeSelf()
+    --button2:removeSelf()
+    textF1:removeSelf()
+    textF2:removeSelf()
+    --button2 = nil
+    --]]
+
 end
 
 
@@ -366,4 +418,6 @@ scene:addEventListener( "hide", scene )
 scene:addEventListener( "destroy", scene )
 
 -- -------------------------------------------------------------------------------
+
 return scene
+
