@@ -148,7 +148,8 @@ function scene:create( event )
                         print("estas en tiempo del evento")
                         local function comen( event )
                         if ( "ended" == event.phase ) then
-                            --composer.gotoScene("jugarEvento")
+                            composer.removeScene( "seleccionCategoriaEvento")
+                            composer.gotoScene("seleccionCategoriaEvento")
                         end
                     end
                     local comenzar = widget.newButton
@@ -252,21 +253,10 @@ function scene:hide( event )
 end
 
 
-function scene:destroy( event )
-    local sceneGroup = self.view
-    background:removeSelf()
-    textlog:removeSelf()
-    nombreEvento:removeSelf()
-    imagen:removeSelf()
-    fechaIniTxt:removeSelf()
-    fechaIni:removeSelf()
-    fechaFinTxt:removeSelf()
-    fechaFin:removeSelf()
-    comenzar:removeSelf()
-    puntuacion:removeSelf()
-    participantes:removeSelf()
-    capacidad:removeSelf()
-end
+--function scene:destroy( event )
+--    local sceneGroup = self.view
+
+--end
 
 ---------------------------------------------------------------------------------
 
@@ -274,7 +264,7 @@ end
 scene:addEventListener( "create", scene )
 scene:addEventListener( "show", scene )
 scene:addEventListener( "hide", scene )
-scene:addEventListener( "destroy", scene )
+--scene:addEventListener( "destroy", scene )
 
 ---------------------------------------------------------------------------------
 
