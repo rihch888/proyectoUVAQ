@@ -157,6 +157,7 @@ function scene:create( event )
     textF2 = native.newTextField( _W*0.5,_H*0.8 , 300, 40 )
     --textF2.align = "center"
     textF2:setTextColor( 0, 0, 0 )
+    textF2.isSecure = true
     --textF2.isSecure = true
     sceneGroup:insert(texto2)
 
@@ -201,12 +202,28 @@ function scene:create( event )
              end
             end
 
-            local dataTable = { ["nombre"] = textF1.text, ["password"] = textF2.text }
+            local dataTable = { ["nombre"] = textF1.text }
             --local dataTable = { ["nombre"] = "Bossuet", ["password"] = "123" }
 
             parse:updateUser( userObjId, dataTable, onUpdateUser )
         end
         actualizar()
+
+        local function actualizar2( )
+            local function onUpdateUser2( event )
+             if not event.error then
+                print( event.response.updatedAt )
+             end
+            end
+
+            local dataTable = { ["password"] = textF2.text }
+            --local dataTable = { ["nombre"] = "Bossuet", ["password"] = "123" }
+
+            parse:updateUser( userObjId, dataTable, onUpdateUser2 )
+        end
+        if textF2.text~="" then
+            actualizar2()
+        end
 --------------------------------------
         
         if(p == false)then

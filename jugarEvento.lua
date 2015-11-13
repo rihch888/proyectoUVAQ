@@ -86,6 +86,7 @@ function exit(event)
                 --expiró la sesion
             else
                 local user_object_id=event.response.objectId
+                local participo = event.response.participo
                 local eventoId=event.response.evento
                 if mydata.score~=0 then
                     parse:createObject("Score", {["score"] = mydata.score, ["evento"] = eventoId}, function(e) 
@@ -96,6 +97,14 @@ function exit(event)
                                     print("score!")
                                     composer.removeScene( "scoreEvento")
                                     composer.gotoScene("scoreEvento")
+                                    local function onUpdateUser( event )
+                                     if not event.error then
+                                        print( event.response.updatedAt )
+                                     end
+                                    end
+                                    local dataTable = { ["participo"] = true }
+                                    parse:updateUser( user_object_id, dataTable, onUpdateUser )
+
                                  end
                             end)
                         end
@@ -570,7 +579,7 @@ local function onGetObjects( event )
                         pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
                         pant:setFillColor(0, 0, 0, 0.9)
                         screenGroup:insert( pant )
-                        aacaba2 = display.newText("Oportunidades", centrox, 100, native.systemFont, 38)
+                        acaba2 = display.newText("Oportunidades", centrox, 100, native.systemFont, 38)
                         screenGroup:insert( acaba2 )
                         acaba3 = display.newText("Agotadas!", centrox, 150, native.systemFont, 38)
                         screenGroup:insert( acaba3 )

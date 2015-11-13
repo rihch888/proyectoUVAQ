@@ -29,10 +29,35 @@ function scene:create( event )
            if event.code == parse.EXPIRED then
             print("No hay sesion")
            else
-            if (event.response.evento==nil) then
+            if (event.response.evento=="") then
                 print("No hay eventos")
+                local nombreEvento = display.newText("No tienes eventos", centrox, 130, native.systemFont, 30)
+                    nombreEvento:setFillColor( 0, 0, 0 )
+                    screenGroup:insert( nombreEvento )
+                    local function regre( event )
+                        if ( "ended" == event.phase ) then
+                            --composer.removeScene( "menuSesion")
+                            composer.gotoScene("menuSesion")
+                        end
+                    end
+                    local regresar = widget.newButton
+                    {
+                        left = 70,
+                        top = 170,
+                        id = "button1",
+                        label = "Regresar",
+                        onEvent = regre,
+                        shape="roundedRect",
+                        width = 180,
+                        height = 40,
+                        cornerRadius = 3,
+                        fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+                        labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+                    }
+                    screenGroup:insert( regresar )
             else
                 eventoId = event.response.evento
+                local participo = event.response.participo
                 print(eventoId)
                 local function onGetObjects( event )
                   if not event.error then
@@ -148,8 +173,21 @@ function scene:create( event )
                         print("estas en tiempo del evento")
                         local function comen( event )
                         if ( "ended" == event.phase ) then
-                            composer.removeScene( "seleccionCategoriaEvento")
-                            composer.gotoScene("seleccionCategoriaEvento")
+                            if(participo~=true) then
+                                composer.removeScene( "seleccionCategoriaEvento")
+                                composer.gotoScene("seleccionCategoriaEvento")
+                            else
+                                local function onComplete( event )
+                           if event.action == "clicked" then
+                                local i = event.index
+                                if i == 1 then
+                                  
+                                end
+                            end
+                          end
+                        local alert = native.showAlert( "Alerta!", "Ya has participado en este evento", { "OK" }, onComplete )
+                            end
+                            
                         end
                     end
                     local comenzar = widget.newButton
