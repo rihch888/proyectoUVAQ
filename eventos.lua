@@ -207,7 +207,7 @@ function scene:create( event )
                     screenGroup:insert( comenzar )
                     local function puntu( event )
                         if ( "ended" == event.phase ) then
-                            --composer.gotoScene("puntuacionEvento")
+                            composer.gotoScene("puntuacionEvento")
                         end
                     end
     
