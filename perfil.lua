@@ -1,5 +1,6 @@
 local composer = require( "composer" )
-
+local facebook = require( "facebook" )
+local json = require( "json" )
 local scene = composer.newScene()
 
 local parse = require("mod_parse")
@@ -36,19 +37,38 @@ function scene:create( event )
     local p = false
     local filemeta = nil
     local photo = nil
-   -- phase = event.phase
     userObjId = nil
     widget = require( "widget" )
-    --textF1 = nil
     fileObjId = nil
     textF1 = nil
     textF2 = nil
-    --carga = nil
-    --fondo = nil 
-    --button1 = nil
-    --photo = nil
-    --img1 = nil
-    --textoGuardar = nil
+ ------------------------------------------
+
+local function deslinkear( event )
+
+--[[
+    local authData = {
+    ["facebook"] = parse.NIL
+    }
+    parse:updateUser( userObjId, authData )
+    local alert = native.showAlert( "Alerta!", userObjId, { "OK" }, onComplete )
+    --]]
+
+    local function onCom( event )
+        if not event.error then
+            local alert = native.showAlert( "Alerta!","eliminado", { "OK" }, onComplete )
+        else
+                local alert = native.showAlert( "Errror!","no funciona", { "OK" }, onComplete )
+        
+        end
+    end
+
+    parse:deleteObject("_User",userObjId, onCom)
+            
+
+end
+
+ ------------------------------------------
 
     local function fitImage( displayObject, fitWidth, fitHeight, enlarge )
             local scaleFactor = fitHeight / displayObject.height 
@@ -405,6 +425,28 @@ function scene:create( event )
     Runtime:addEventListener( "key", onKeyEvent )
     ------------------^boton guardar
     
+    --------------------------------------
+    --[[
+     button9 = widget.newButton
+    {
+    label = "button",
+    onEvent = deslinkear,
+    emboss = false,
+    shape="roundedRect",
+    width = 180,
+    height = 40,
+    cornerRadius = 3,
+    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+    }
+
+    button9.x = _W*0.5
+    button9.y = _H*0.98
+
+    button9:setLabel( "deslinkear")
+    --]]
+    ----------------------------
+
 end
 
 

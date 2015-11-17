@@ -10,6 +10,7 @@ parse:init({
   apiKey = "lyhtF5oj1K6Ui0I9EVPDwr7CJ1e5mLGdIHn2HKiI"
 })
 
+
 function scene:create( event )
     local screenGroup = self.view
     parse.showStatus = true
@@ -18,58 +19,19 @@ function scene:create( event )
     local background = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
     background:setFillColor(1, 1, 1)
     screenGroup:insert( background )
-    local textlog = display.newText("Login", centrox, 100, native.systemFont, 30)
-    textlog:setFillColor( 0, 0, 0 )
-    screenGroup:insert( textlog )
-    
-     local function iniciarSesion (event)
-        facebook.logout()
-        if ( "ended" == event.phase ) then
-            
-           local function onLoginUser( event )
-                if not event.error then
-                    if event.response.emailVerified then
-                        native.setKeyboardFocus(nil)
+    --
+    local textreg = display.newText("Registro", centrox, 35, native.systemFont, 30)
+    textreg:setFillColor( 0, 0, 0 )
+    screenGroup:insert( textreg )
 
-                        composer.gotoScene("menuSesion")
-                    else
-                        
-                        local function onComplete( event )
-                           if event.action == "clicked" then
-                                local i = event.index
-                                if i == 1 then
-                                  email.text=""
-                                  pass.text=""
-                                end
-                            end
-                          end
-                        local alert = native.showAlert( "Error!", "No se ha verificado el correo electrónico", { "OK" }, onComplete )
-                    end
-                else
-                    
-                  local function onComplete( event )
-                   if event.action == "clicked" then
-                        local i = event.index
-                        if i == 1 then
-                          email.text=""
-                          pass.text=""
-                        end
-                    end
-                  end
-                local alert = native.showAlert( "Error!", "Correo electrónico o contraseña incorrectos", { "OK" }, onComplete )
-                end
-            end
-            parse:loginUser( { ["username"] = email.text, ["password"] = pass.text }, onLoginUser )
-        end
-    end
-
-    local function entrarFace( event )
-        
-     if(event.phase=="ended")then
+    local function registroFace( event )
+      if(event.phase=="ended")then
       local sessionToken, sessionExpiry
- 
-local function doParseLogin( fb_user_id, fb_session_token, fb_session_expiry )
- 
+      local email
+      local nombre1
+      local nombre2
+     
+    local function doParseLogin( fb_user_id, fb_session_token, fb_session_expiry )
  
   local authData = {
     ["facebook"] = {
@@ -78,24 +40,34 @@ local function doParseLogin( fb_user_id, fb_session_token, fb_session_expiry )
       ["expiration_date"] = parse:timestampToISODate( fb_session_expiry )
     }
   }
-  
-
- 
  
   local function onLoginUser( event )
-    print( event.response.objectId )
+    --print( event.response.objectId )
     if event.status == 201 then
-      
+      --newly created
+      --guardar datos de usuario
+
+      local userObjId = event.response.objectId
+      local nombreCompleto = nombre1.." "..nombre2
+      local function onCompleto( event )
+          if not event.error then
+            local alert = native.showAlert( "Alerta!",nombreCompleto, { "OK" }, onComplete )
+          else
+            local alert = native.showAlert( "Errror!",email, { "OK" }, onComplete )
+          end
+      end
+
+      ------------
+      local dataTable = {["nombre"] = nombreCompleto, ["username"] = email, ["email"] = email, ["emailVerified"] = true}
+      parse:updateUser( userObjId, dataTable, onCompleto)
+      -----------
+
     else
-      --print( event.response.authData.facebook.id )
-      --local user = event.response.objectId
-      composer.gotoScene("menuSesion")
+      print( event.response.authData.facebook.id )
     end
   end
   parse:loginUser( { authData = authData }, onLoginUser )
------
 end
----------
  
 local function doFacebookLogin()
  
@@ -104,7 +76,6 @@ local function doFacebookLogin()
       if event.phase == "login" then
         sessionToken = event.token
         sessionExpiry = event.expiration
-
  
         if sessionToken then
           facebook.request( "me" )
@@ -113,6 +84,11 @@ local function doFacebookLogin()
     elseif event.type == "request" then
       if not event.isError then
         local response = json.decode( event.response )
+
+          email =   response.email
+          nombre1 = response.first_name
+          nombre2 = response.last_name
+
  
         if response.id then
           local fb_user_id = response.id
@@ -122,26 +98,31 @@ local function doFacebookLogin()
       end
     end
   end
- 
-  facebook.login( 
-    "671856566284765",
-    facebookListener, 
-    { "publish_actions, email" } 
-  )
- 
-end
- 
-doFacebookLogin()
-     end
-    
-        ------fin entrarFace---------
+     
+      facebook.login( 
+        "671856566284765",
+        facebookListener, 
+        { "publish_actions", "email", "public_profile" } 
+      )
+     
     end
+     
+    doFacebookLogin()
+    end
+  end
 
-     local loginFace = widget.newButton
+local function registroCorreo( event )
+  if(event.phase == "ended")then
+  composer.gotoScene("registro")
+  end
+  
+end
+
+local loginFace = widget.newButton
 {
     id = "loginFace",
     label = "Conectate con Facebook",
-    onEvent = entrarFace,
+    onEvent = registroFace,
     shape="roundedRect",
     width = 220,
     height = 40,
@@ -150,39 +131,27 @@ doFacebookLogin()
     labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
 }
 loginFace.x = _W*0.5
-loginFace.y = _H*0.3
+loginFace.y = _H*0.4
 screenGroup:insert( loginFace )
-    
-    local login = widget.newButton
+
+local registrar = widget.newButton
 {
     id = "button1",
-    label = "Iniciar sesión",
-    onEvent = iniciarSesion,
+    label = "Regístrate con tu dirección \nde correo electrónico",
+    onEvent = registroCorreo,
     shape="roundedRect",
-    width = 180,
+    width = _W*0.7,
     height = 40,
     cornerRadius = 3,
     fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
     labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
 }
-login.x = _W*0.5
-login.y = _H*0.75
-screenGroup:insert( login )
-
-    local opcionesTexto2 = {
-        text ="O accede con tu cuenta", 
-        font = native.systemFont, 
-        fontSize =18,
-        x=  _W*0.5,
-        y=  _H*0.44
-    }
-
-    textoOpcion = display.newText(opcionesTexto2)
-    textoOpcion:setTextColor( 0,0,0 )
-    screenGroup:insert(textoOpcion)
+registrar.x= _W*0.5
+registrar.y = _H*0.6
+screenGroup:insert( registrar )
 
 local function onKeyEvent( event )
-    if ( event.keyName == "back" ) then
+    if ( event.keyName == "back" and event.phase == "up") then
         local platformName = system.getInfo( "platformName" )
         if ( platformName == "Android" ) or ( platformName == "WinPhone" ) then
             native.setKeyboardFocus(nil)
@@ -194,7 +163,6 @@ local function onKeyEvent( event )
 end
 Runtime:addEventListener( "key", onKeyEvent )
 
-
 end
 
 function scene:show( event )
@@ -205,12 +173,7 @@ function scene:show( event )
         -- Called when the scene is still off screen (but is about to come on screen).
     elseif ( phase == "did" ) then
         -- Example: start timers, begin animation, play audio, etc.
-        email = native.newTextField(_W*0.5,_H*0.55, 180, 40 )
-        email.inputType = "email"
-        email.placeholder = "Email"
-        pass = native.newTextField( _W*0.5,_H*0.65, 180, 40 )
-        pass.isSecure = true
-        pass.placeholder = "Contraseña"
+       
     end
 end
 
@@ -219,11 +182,7 @@ function scene:hide( event )
     local phase = event.phase
 
     if ( phase == "will" ) then
-        -- Example: stop timers, stop animation, stop audio, etc.
-        email:removeSelf()
-        email.isVisible = false
-        pass:removeSelf()
-        pass.isVisible = false
+        
         native.setKeyboardFocus(nil)
     elseif ( phase == "did" ) then
         -- Called immediately after scene goes off screen.
@@ -235,19 +194,10 @@ function scene:destroy( event )
     local sceneGroup = self.view
     background:removeSelf()
     background=nil
-    textlog:removeSelf()
-    textlog=nil
-    login:removeSelf()
-    login=nil
-    if error1 ~= nil then
-        error1:removeSelf()
-        error1=nil
-    end
-    if error2 ~= nil then
-        error2:removeSelf()
-        error2=nil
-    end
-
+    textreg:removeSelf()
+    textreg=nil
+    registrar:removeSelf()
+    registrar=nil
 end
 
 ---------------------------------------------------------------------------------

@@ -2,6 +2,8 @@ local composer = require( "composer" )
 local widget = require( "widget" )
 local parse = require( "mod_parse" )
 local widget = require( "widget" )
+local facebook = require( "facebook" )
+local json = require( "json" )
 local scene = composer.newScene()
 parse:init({ 
   appId = "IBEd9JQGfKtJHTCPzXddQsVT6aQUn8Q0LOe8wR5i", 
@@ -137,6 +139,19 @@ function scene:create( event )
        end
      end
      parse:getMe( onGetMe )
+
+     local function onKeyEvent( event )
+    if ( event.keyName == "back" and event.phase == "up") then
+        local platformName = system.getInfo( "platformName" )
+        if ( platformName == "Android" ) or ( platformName == "WinPhone" ) then
+            native.setKeyboardFocus(nil)
+            composer.gotoScene("menuSesion")
+            return true
+        end
+    end
+    return false
+end
+Runtime:addEventListener( "key", onKeyEvent )
      
 end
 

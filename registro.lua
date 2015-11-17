@@ -109,7 +109,7 @@ local function onKeyEvent( event )
         local platformName = system.getInfo( "platformName" )
         if ( platformName == "Android" ) or ( platformName == "WinPhone" ) then
             native.setKeyboardFocus(nil)
-            composer.gotoScene("menuInicio")
+            composer.gotoScene("opcionRegistro")
             return true
         end
     end
