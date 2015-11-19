@@ -21,11 +21,13 @@ parse:createInstallation( installationDataTable, onInstallation )
 ---------------------------------------------------------------------------------
 function scene:create( event )
     local screenGroup = self.view
-    local centrox = display.contentCenterX
-    local centroy = display.contentCenterY
+    centrox = display.contentCenterX
+    centroy = display.contentCenterY
     local background = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
     background:setFillColor(1, 1, 1)
     screenGroup:insert( background )
+    local fondo = nil
+    local textoOpcion = nil 
     local text = display.newImageRect("texto.png", 200, 50)
     text.x = centrox
     text.y = 80
@@ -69,7 +71,7 @@ function scene:create( event )
 
     local function registro( event )
         if ( "ended" == event.phase ) then
-            composer.gotoScene("registro")
+            composer.gotoScene("opcionRegistro")
         end
     end
     
@@ -99,6 +101,7 @@ function scene:show( event )
         -- Called when the scene is still off screen (but is about to come on screen).
     elseif ( phase == "did" ) then
         -- Example: start timers, begin animation, play audio, etc.
+        
     end
 end
 
@@ -132,6 +135,10 @@ function scene:destroy( event )
     entrar=nil
     registrar:removeSelf()
     registrar=nil
+    email:removeSelf()
+    email = nil
+    pass:removeSelf()
+    pass=nil
 end
 
 ---------------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 local composer = require( "composer" )
-
+local facebook = require( "facebook" )
+local json = require( "json" )
 local scene = composer.newScene()
 
 local parse = require("mod_parse")
@@ -24,38 +25,76 @@ _H = display.contentHeight
 -- "scene:create()"
 function scene:create( event )
     local sceneGroup = self.view
-      background = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
+    centrox = display.contentCenterX
+    centroy = display.contentCenterY
+    background = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
     background:setFillColor(1, 1, 1)
     sceneGroup:insert( background )
 
     local photoAvatar = nil
+    local photoAvatar3 = nil
     local fondo = nil
     local p = false
     local filemeta = nil
-   -- phase = event.phase
+    local photo = nil
     userObjId = nil
     widget = require( "widget" )
-    --textF1 = nil
     fileObjId = nil
-    --carga = nil
-    --fondo = nil 
-    --button1 = nil
-    --photo = nil
-    --img1 = nil
-    --textoGuardar = nil
+    textF1 = nil
+    textF2 = nil
+ ------------------------------------------
+
+local function deslinkear( event )
+
+--[[
+    local authData = {
+    ["facebook"] = parse.NIL
+    }
+    parse:updateUser( userObjId, authData )
+    local alert = native.showAlert( "Alerta!", userObjId, { "OK" }, onComplete )
+    --]]
+
+    local function onCom( event )
+        if not event.error then
+            local alert = native.showAlert( "Alerta!","eliminado", { "OK" }, onComplete )
+        else
+                local alert = native.showAlert( "Errror!","no funciona", { "OK" }, onComplete )
+        
+        end
+    end
+
+    parse:deleteObject("_User",userObjId, onCom)
+            
+
+end
+
+ ------------------------------------------
+
+    local function fitImage( displayObject, fitWidth, fitHeight, enlarge )
+            local scaleFactor = fitHeight / displayObject.height 
+                local newWidth = displayObject.width * scaleFactor
+                if newWidth > fitWidth then
+                    scaleFactor = fitWidth / displayObject.width 
+                end
+                if not enlarge and scaleFactor > 1 then
+                    return
+            end
+            displayObject:scale( scaleFactor, scaleFactor )
+            
+    end
 
     function onSelected2(event)
         path = system.pathForFile( "avatar.jpg", system.TemporaryDirectory)
         local fh, reason = io.open( path, "r" )
         if fh then
-            p = false
+            --p = false
+            photoAvatar:removeEventListener( "touch", menuImg )
             photoAvatar:removeSelf()
-            photoAvatar = nil
-            photoAvatar = display.newImageRect(path, 150, 80)
-            photoAvatar.x=display.contentCenterX*0.5
-            photoAvatar.y=display.contentCenterY*0.5
+            photoAvatar = display.newImageRect(path,320,200)
             photoAvatar.x=_W*0.5
             photoAvatar.y=_H*0.2
+            photoAvatar:addEventListener( "touch", menuImg )
+            --fitImage(photoAvatar,display.contentWidth-20,display.contentHeight*0.3, true)
             sceneGroup:insert(photoAvatar)
         end
     end
@@ -64,13 +103,22 @@ function scene:create( event )
     path = system.pathForFile( "avatar.jpg", system.TemporaryDirectory)
     local fh, reason = io.open( path, "r" )
         if fh then
-            p = false
-            photoAvatar:removeSelf()
-            photoAvatar = nil
-            photoAvatar = display.newImageRect(path, 150, 80)
+            --photoAvatar: removeEventListener("touch", menuImg)
+        
+
+        if(p==true)then
+             photo.isVisible = false
+        end
+       
+           p = false
+          
+            photoAvatar = display.newImage(path)
             photoAvatar.x=_W*0.5
-            photoAvatar.y=_H*0.2
+            photoAvatar.y=_H*0.19
+            --photoAvatar:addEventListener("touch", menuImg)
+            fitImage(photoAvatar,display.contentWidth-20,display.contentHeight*0.3, false)
             sceneGroup:insert(photoAvatar)
+            
         end
     end
 
@@ -97,9 +145,8 @@ function scene:create( event )
             media.selectPhoto(
         {
         mediaSource = media.SavedPhotosAlbum,
-        listener = onComplete, 
         destination = { baseDir=system.TemporaryDirectory, filename="avatar.jpg"},
-        listener = onSelected2
+        listener = onSelected
         })
         else
             native.showAlert( "Corona", "This device does not have a photo library.", { "OK" } )
@@ -133,16 +180,14 @@ function scene:create( event )
         font = native.systemFont, 
         fontSize =20,
         x=  _W*0.5,
-        y=  _H*0.5
+        y=  _H*0.45
     }
 
 
     texto1 = display.newText(opcionesTexto)
     texto1:setFillColor(0,0,0)
 
-    textF1 = native.newTextField( _W*0.5,_H*0.6 , 300, 40 )
-    --textF1.align = "center"
-    textF1:setTextColor( 0, 0, 0 )
+   
     sceneGroup:insert(texto1)
 
     local opcionesTexto = {
@@ -150,14 +195,11 @@ function scene:create( event )
         font = native.systemFont, 
         fontSize =20,
         x=  _W*0.5,
-        y=  _H*0.7
+        y=  _H*0.65
     }
     texto2 = display.newText(opcionesTexto)
     texto2:setFillColor(0,0,0)
-    textF2 = native.newTextField( _W*0.5,_H*0.8 , 300, 40 )
-    --textF2.align = "center"
-    textF2:setTextColor( 0, 0, 0 )
-    textF2.isSecure = true
+    
     --textF2.isSecure = true
     sceneGroup:insert(texto2)
 
@@ -166,17 +208,19 @@ function scene:create( event )
     path = system.pathForFile( "avatar.jpg", system.TemporaryDirectory)
     local fh, reason = io.open( path, "r" )
     if fh then
-        photoAvatar = display.newImageRect(path, 150, 80)
+        photoAvatar = display.newImage(path)
         photoAvatar.x=_W*0.5
-        photoAvatar.y=_H*0.2
-        photoAvatar:addEventListener( "touch", menuImg )
+        photoAvatar.y=_H*0.19
+        --photoAvatar:addEventListener( "touch", menuImg )
+        fitImage(photoAvatar,display.contentWidth-20,display.contentHeight*0.3, true)
         sceneGroup:insert(photoAvatar)
         else
-            photoAvatar = display.newImageRect( "avatar.png", 180, 180 )
-            photoAvatar.x = _W*0.5
-            photoAvatar.y = _H*0.23
-            photoAvatar:addEventListener( "touch", menuImg )
-            sceneGroup:insert(photoAvatar)
+            photo = display.newImage( "avatar.png")
+            photo.x = _W*0.5
+            photo.y = _H*0.19
+          --  photo:addEventListener( "touch", menuImg )
+            sceneGroup:insert(photo)
+            fitImage(photo,display.contentWidth-20,display.contentHeight*0.3, true)
             p = true
 
     end
@@ -191,9 +235,11 @@ function scene:create( event )
             button1:removeEventListener("touch")
             textF2.isVisible = false
             textF1.isVisible = false
+           --[[
             if photoAvatar then
                 photoAvatar:removeEventListener( "touch", menuImg )
             end
+            --]]
 
         local function actualizar( )
             local function onUpdateUser( event )
@@ -231,21 +277,17 @@ function scene:create( event )
         else
             filemeta = {["filename"] = "avatar.png", ["baseDir"] = system.ResourceDirectory}
         end
-        --local filemeta = {["filename"] = "subir.jpg", ["baseDir"] = system.ResourceDirectory}
+
     local function onFileUploaded(event)
       if not event.error then
         
-
-        print("<<<<<<<<<<<<<<<")
         fileObjId = event.response.name
-        print(">>>>>>>>>>>>>>>")
 
         local function onFileLinked( event )
           if not event.error then
           end
         end
         parse:linkFile(parse.USER, userObjId, "avatar", fileObjId, onFileLinked)
-            --carga:removeSelf()
             fondo:removeSelf()
             fondo = nil
             textoGuardar:removeSelf()
@@ -253,9 +295,11 @@ function scene:create( event )
             textF2.isVisible = true
             textF1.isVisible = true
             button1.isVisible = true
+          --[[
           if photoAvatar then
                 photoAvatar:addEventListener( "touch", menuImg )
             end
+            --]]
       end
     end
     parse:uploadFile(filemeta, onFileUploaded)
@@ -301,7 +345,7 @@ function scene:create( event )
 
 -- Center the button
     button1.x = _W*0.5
-    button1.y = _H*0.92
+    button1.y = _H*0.85
 
 -- Change the button's label text
     button1:setLabel( "Guardar cambios")
@@ -309,9 +353,12 @@ function scene:create( event )
 
     guardar()
 
---[[
     local function regresar( event )
         if ( "ended" == event.phase ) then
+        textF1:removeSelf()
+        textF1.isVisible = false
+        textF2:removeSelf()
+        textF2.isVisible = false
         composer.removeScene("perfil")
         composer.gotoScene("menuSesion")
         end
@@ -333,16 +380,41 @@ function scene:create( event )
 
 -- Center the button
     button2.x = _W*0.5
-    button2.y = _H*0.99
+    button2.y = _H*0.95
 
 -- Change the button's label text
     button2:setLabel( "Regresar")
     sceneGroup:insert(button2)
     --]]
+
+    button3 = widget.newButton
+    {
+    label = "button3",
+    onEvent = menuImg,
+    emboss = false,
+    --properties for a rounded rectangle button...
+    shape="roundedRect",
+    width = 160,
+    height = 25,
+    cornerRadius = 3,
+    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+    }
+
+-- Center the button
+    button3.x = _W*0.5
+    button3.y = _H*0.37
+
+-- Change the button's label text
+    button3:setLabel( "Cambiar imagen")
+    sceneGroup:insert(button3)
     -------------------------------------
 
-    function onKeyEvent(event)
-    if ( event.keyName == "back" and event.phase == "up") then
+   local function onKeyEvent(event)
+    if ( event.phase == "up" and event.keyName == "back") then
+        
+        textF1.isVisible = false
+        textF2.isVisible = false
         composer.removeScene("perfil")
         composer.gotoScene("menuSesion")
         return true
@@ -351,28 +423,49 @@ function scene:create( event )
     end
 
     Runtime:addEventListener( "key", onKeyEvent )
-
     ------------------^boton guardar
     
+    --------------------------------------
+    --[[
+     button9 = widget.newButton
+    {
+    label = "button",
+    onEvent = deslinkear,
+    emboss = false,
+    shape="roundedRect",
+    width = 180,
+    height = 40,
+    cornerRadius = 3,
+    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+    }
+
+    button9.x = _W*0.5
+    button9.y = _H*0.98
+
+    button9:setLabel( "deslinkear")
+    --]]
+    ----------------------------
+
 end
 
 
 -- "scene:show()"
 function scene:show( event )
     local sceneGroup = self.view
-
-    -- Initialize the scene here.
-    -- Example: add display objects to "sceneGroup", add touch listeners, etc.
-   
-
+    local phase = event.phase
 
     if ( phase == "will" ) then
-        -- Called when the scene is still off screen (but is about to come on screen).
+        textF1 = native.newTextField( _W*0.5,_H*0.55 , 180, 40 )
+        --textF1.align = "center"
+        textF1:setTextColor( 0, 0, 0 )
+        textF2 = native.newTextField( _W*0.5,_H*0.75 , 180, 40 )
+        --textF2.align = "center"
+        textF2:setTextColor( 0, 0, 0 )
+        textF2.isSecure = true
        
     elseif ( phase == "did" ) then
-        -- Called when the scene is now on screen.
-        -- Insert code here to make the scene come alive.
-        -- Example: start timers, begin animation, play audio, etc.
+        
     
    end
 end
@@ -385,9 +478,13 @@ function scene:hide( event )
     local phase = event.phase
 
     if ( phase == "will" ) then
-        -- Called when the scene is on screen (but is about to go off screen).
-        -- Insert code here to "pause" the scene.
-        -- Example: stop timers, stop animation, stop audio, etc.
+       
+        --textF1:removeSelf()
+        --textF1.isVisible = false
+        --textF2:removeSelf()
+        --textF2.isVisible = false
+        native.setKeyboardFocus(nil)
+        
 
     elseif ( phase == "did" ) then
         -- Called immediately after scene goes off screen.
@@ -418,8 +515,12 @@ function scene:destroy( event )
     
     button1:removeSelf()
     --button2:removeSelf()
-    textF1:removeSelf()
-    textF2:removeSelf()
+    
+    --if(textF1)then
+    --textF1:removeSelf()
+    --textF2:removeSelf()
+    --end
+    
     --button2 = nil
     --]]
 

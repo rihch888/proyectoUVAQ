@@ -6,3 +6,5 @@ parse:init({
   apiKey = "lyhtF5oj1K6Ui0I9EVPDwr7CJ1e5mLGdIHn2HKiI"
 })
 composer.gotoScene( "menuInicio" )
+_W = display.contentWidth
+_H = display.contentHeight
