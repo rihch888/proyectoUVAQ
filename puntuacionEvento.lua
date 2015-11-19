@@ -38,6 +38,8 @@ function scene:create( event )
     
     local function onGetMe( event )
     local evento = event.response.evento
+    local cont=0;
+    local cont2=0;
         local function onGetObjects( event )
             if not event.error then
                 local function onRowRender( e )
@@ -45,17 +47,39 @@ function scene:create( event )
                     local rowHeight = row.contentHeight
                     local rowWidth = row.contentWidth
                     local function onGetUser( ev )
-                        if not event.error then
+                        if not ev.error then
                             local rowTitle = display.newText(row,ev.response.nombre, 0, 0, native.systemFont, 25)
                             rowTitle:setFillColor(0)
                             rowTitle.anchorX=0
-                            rowTitle.x=0
+                            rowTitle.x=50
                             rowTitle.y=rowHeight*0.5
                             local rowTitle2 = display.newText(row,event.results[row.index].score, 0, 0, native.systemFont, 25)
                             rowTitle2:setFillColor(0)
                             rowTitle2.anchorX=0
                             rowTitle2.x=280
                             rowTitle2.y=rowHeight*0.5
+
+                            local function onAvatar(event)
+                                local avatar = event.response.filename
+                                local avatarbr = event.response.baseDirectory
+                                local photoAvatar = display.newImageRect( row,avatar, avatarbr,50, 50 )
+                                --photoAvatar:scale( 0.5, 0.5 )
+                                photoAvatar.x=15--modificar hasta que quede en su lugar
+                                photoAvatar.y=rowHeight*0.5
+                                cont=cont+50
+                                --avatar.width=50
+                                --avatar.height=50
+                            end
+                            if ev.response.avatar~=nil then
+                                local url = ev.response.avatar.url
+                                --display.loadRemoteImage(url,"GET", onAvatar, "av"..row.index..".jpg")
+                                network.download( url, "GET", onAvatar, "av"..row.index..".jpg" )
+                            else
+                                local photoAvatar = display.newImageRect( row, "avatar.png", 50, 50 )
+                                photoAvatar.x=15
+                                photoAvatar.y=rowHeight*0.5
+                                cont=cont+50
+                            end
                         end
                     end
                     parse:getUser( event.results[row.index].player.objectId, onGetUser )
