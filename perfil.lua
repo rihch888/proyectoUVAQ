@@ -45,27 +45,14 @@ function scene:create( event )
  ------------------------------------------
 
 local function deslinkear( event )
-
---[[
-    local authData = {
-    ["facebook"] = parse.NIL
-    }
-    parse:updateUser( userObjId, authData )
-    local alert = native.showAlert( "Alerta!", userObjId, { "OK" }, onComplete )
-    --]]
-
     local function onCom( event )
         if not event.error then
             local alert = native.showAlert( "Alerta!","eliminado", { "OK" }, onComplete )
         else
                 local alert = native.showAlert( "Errror!","no funciona", { "OK" }, onComplete )
-        
         end
     end
-
     parse:deleteObject("_User",userObjId, onCom)
-            
-
 end
 
  ------------------------------------------

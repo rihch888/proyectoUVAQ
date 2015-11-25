@@ -24,14 +24,19 @@ function scene:create( event )
     textreg:setFillColor( 0, 0, 0 )
     screenGroup:insert( textreg )
 
+    local function onUpdateUser(  )
+      composer.gotoScene("menuSesion")
+    end
+
     local function registroFace( event )
       if(event.phase=="ended")then
-      local sessionToken, sessionExpiry
-      local email
-      local nombre1
-      local nombre2
-     
-    local function doParseLogin( fb_user_id, fb_session_token, fb_session_expiry )
+        local sessionToken, sessionExpiry
+        local email = ""
+        local nombre1 = ""
+        local nombre2 = ""
+        local userObjId = nil
+local function doParseLogin( fb_user_id, fb_session_token, fb_session_expiry )
+ 
  
   local authData = {
     ["facebook"] = {
@@ -40,34 +45,31 @@ function scene:create( event )
       ["expiration_date"] = parse:timestampToISODate( fb_session_expiry )
     }
   }
+  
+
+ 
  
   local function onLoginUser( event )
     --print( event.response.objectId )
+    userObjId = event.response.objectId
     if event.status == 201 then
-      --newly created
-      --guardar datos de usuario
-
-      local userObjId = event.response.objectId
-      local nombreCompleto = nombre1.." "..nombre2
-      local function onCompleto( event )
-          if not event.error then
-            local alert = native.showAlert( "Alerta!",nombreCompleto, { "OK" }, onComplete )
-          else
-            local alert = native.showAlert( "Errror!",email, { "OK" }, onComplete )
-          end
-      end
-
-      ------------
-      local dataTable = {["nombre"] = nombreCompleto, ["username"] = email, ["email"] = email, ["emailVerified"] = true}
-      parse:updateUser( userObjId, dataTable, onCompleto)
-      -----------
-
+      local alert = native.showAlert( "aleta!","funciona", { "OK" }, irMenuSesion )
     else
-      print( event.response.authData.facebook.id )
+      --print( event.response.authData.facebook.id )
+      --local user = event.response.objectId
+      --local alert = native.showAlert( "aleta!","funciona", { "OK" }, irMenuSesion )
+      --local nombreCompleto = nombre1.." "..nombre2
+      local alert = native.showAlert( "aleta!",nombre1, { "OK" }, irMenuSesion )
+      local dataTable = { ["nombre"] = nombre1, ["email"] = email, ["emailVerified"] = true}
+      parse:updateUser( userObjId, dataTable, onUpdateUser )
+
+
     end
   end
   parse:loginUser( { authData = authData }, onLoginUser )
+-----
 end
+---------
  
 local function doFacebookLogin()
  
@@ -76,6 +78,7 @@ local function doFacebookLogin()
       if event.phase == "login" then
         sessionToken = event.token
         sessionExpiry = event.expiration
+
  
         if sessionToken then
           facebook.request( "me" )
@@ -85,10 +88,9 @@ local function doFacebookLogin()
       if not event.isError then
         local response = json.decode( event.response )
 
-          email =   response.email
-          nombre1 = response.first_name
-          nombre2 = response.last_name
-
+        nombre1 = response.first_name
+        nombre2 = response.last_name
+        email = response.email
  
         if response.id then
           local fb_user_id = response.id
@@ -98,18 +100,18 @@ local function doFacebookLogin()
       end
     end
   end
-     
-      facebook.login( 
-        "671856566284765",
-        facebookListener, 
-        { "publish_actions", "email", "public_profile" } 
-      )
-     
+ 
+  facebook.login( 
+    "671856566284765",
+    facebookListener, 
+    { "publish_actions", "email", "public_profile" } 
+  )
+ 
+end
+ 
+doFacebookLogin()
+      end
     end
-     
-    doFacebookLogin()
-    end
-  end
 
 local function registroCorreo( event )
   if(event.phase == "ended")then

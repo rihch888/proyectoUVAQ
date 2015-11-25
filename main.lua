@@ -8,3 +8,4 @@ parse:init({
 composer.gotoScene( "menuInicio" )
 _W = display.contentWidth
 _H = display.contentHeight
+parse.showStatus = true
