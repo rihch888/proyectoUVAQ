@@ -14,19 +14,18 @@ application = {
       },
    },
 
-	--[[
-	-- Push notifications
-	notification =
-	{
-		iphone =
-		{
-			types =
-			{
-				"badge", "sound", "alert", "newsstand"
-			}
-		}
-	},
-	--]]    
+   notification =
+  {
+    google = { projectNumber = "366913927839", },
+    iphone =
+    {
+      types =
+      {
+        "badge", "sound", "alert", "newsstand"
+      }
+    }
+  }
+  
 }
 notification = 
         {

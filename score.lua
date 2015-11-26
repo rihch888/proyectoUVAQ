@@ -23,7 +23,7 @@ function scene:create( event )
 	logo.x = centrox+(centrox/1.5)
 	logo.y = 50
 	sceneGroup:insert( logo )
-	local imagen = display.newImageRect("preguntados.png", 50, 50)
+	local imagen = display.newImageRect("ruleta.png", 50, 50)
 	imagen.x = centrox-(centrox/1.4)
 	imagen.y = 50
 	sceneGroup:insert( imagen )

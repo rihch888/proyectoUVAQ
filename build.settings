@@ -17,6 +17,12 @@ settings =
         {
             publisherId = "com.coronalabs"
         },
+
+        --["plugin.notifications"] =
+		--{
+		--	publisherId = "com.coronalabs",
+			--supportedPlatforms = { iphone = true },
+		--},
     },
    
 	
@@ -87,12 +93,24 @@ settings =
 	--
 	android =
 	{	
+
+		permissions =
+		{
+			{ name = ".permission.C2D_MESSAGE", protectionLevel = "signature" },
+		},
+
 		coronaWindowMovesWhenKeyboardAppears = true,
+
 		usesPermissions =
 		{
+			"android.permission.RECEIVE_BOOT_COMPLETED",
 			"android.permission.INTERNET",
 			"android.permission.CAMERA",
       		"android.permission.WRITE_EXTERNAL_STORAGE",
+      		"android.permission.GET_ACCOUNTS",
+			"android.permission.RECEIVE_BOOT_COMPLETED",
+			"com.google.android.c2dm.permission.RECEIVE",
+			".permission.C2D_MESSAGE",
 		},
 	},
 }

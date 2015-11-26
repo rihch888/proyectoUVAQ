@@ -26,7 +26,7 @@ local logo = display.newImageRect("logo.png", 100, 35)
 logo.x = centrox+(centrox/1.5)
 logo.y = 30
 screenGroup:insert( logo )
-imagens = display.newImageRect("preguntados.png", 50, 50)
+imagens = display.newImageRect("ruleta.png", 50, 50)
 imagens.x = centrox-(centrox/1.4)
 imagens.y = 30
 screenGroup:insert( imagens )
