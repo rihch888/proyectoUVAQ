@@ -14,7 +14,7 @@ end
 local installationDataTable = {
   ["deviceType"] = "android",
   ["pushType"] = "gcm",
-  ["deviceToken"] = "device-token",
+  ["deviceToken"] = "AIzaSyBwoZ8ys1-VDhGMeXI6EOiAiBPF4Bnk6TE",
    ["channels"] = { "" },
 }
 parse:createInstallation( installationDataTable, onInstallation )

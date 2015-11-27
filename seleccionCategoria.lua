@@ -132,7 +132,7 @@ function scene:show( event )
 
 		local function girar()
 			print("dio tap a ruleta")
-			local categorias = {"Arte", "Deportes", "Historia", "Geografía", "Cine", "Entretenimiento", "Música", "Ciencia"}
+			local categorias = {"Historia Universal", "Historia de México", "Arte", "Literatura", "Filosofía", "Psicología", "Religión", "Ideario UVAQ"}
 			if presionado == false then
 				random = math.random(8)
 				random2 = 1
