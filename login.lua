@@ -21,8 +21,39 @@ function scene:create( event )
     local textlog = display.newText("Login", centrox, 100, native.systemFont, 30)
     textlog:setFillColor( 0, 0, 0 )
     screenGroup:insert( textlog )
+    local userObjId = nil
+    --local e_mail = "a@gmail.com"
+    local response = nil
+
+    local function irMenuSesion( event )
+      
+
+  
+      local function onUpdateUser( event )
+        composer.gotoScene("menuSesion")
+      end
+    ------------------------
+    local function onGetMe( event )
+        if event.code == parse.EXPIRED then
+            local alert = native.showAlert( "Error!","Vuelve a iniciar sesion", { "OK" }, onComplete )
+        else
+
+        --facebook.login( "671856566284765", listener, {"publish_actions"}  )
+        --statusMessage.textObject.text = response.name
+
+        userObjId = event.response.objectId
+        local dataTable = { ["nombre"] = response.name}
+        parse:updateUser( userObjId, dataTable, onUpdateUser )
+        end
+    end
+    parse:getMe( onGetMe )
+    --------------------------
+    
+    end
+
     
      local function iniciarSesion (event)
+        
         facebook.logout()
         if ( "ended" == event.phase ) then
             
@@ -83,13 +114,15 @@ local function doParseLogin( fb_user_id, fb_session_token, fb_session_expiry )
  
  
   local function onLoginUser( event )
-    print( event.response.objectId )
+    --print( event.response.objectId )
+    userObjId = event.response.objectId
     if event.status == 201 then
-      
+      irMenuSesion()
     else
       --print( event.response.authData.facebook.id )
       --local user = event.response.objectId
-      composer.gotoScene("menuSesion")
+      --local alert = native.showAlert( "aleta!","funciona", { "OK" }, irMenuSesion )
+      irMenuSesion()
     end
   end
   parse:loginUser( { authData = authData }, onLoginUser )
@@ -111,14 +144,21 @@ local function doFacebookLogin()
         end
       end
     elseif event.type == "request" then
+      response = event.response
       if not event.isError then
-        local response = json.decode( event.response )
+        response = json.decode( event.response )
+        
+        --local response = json.decode( event.response )
+        --e_mail = response.email
+
  
         if response.id then
           local fb_user_id = response.id
           --all set, lets create/login Parse User
           doParseLogin( fb_user_id, sessionToken, sessionExpiry )
         end
+      else
+         native.showAlert( "Ooops!", "There was a problem connecting to Facebook.  Check your Internet connection and try again...", { "Ok" } )
       end
     end
   end
@@ -126,7 +166,7 @@ local function doFacebookLogin()
   facebook.login( 
     "671856566284765",
     facebookListener, 
-    { "publish_actions, email" } 
+    { "publish_actions","email"} 
   )
  
 end

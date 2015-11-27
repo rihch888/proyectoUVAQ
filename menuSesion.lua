@@ -24,14 +24,14 @@ function scene:create( event )
     logo.x = centrox+(centrox/1.5)
     logo.y = 50
     screenGroup:insert( logo )
-    local imagen = display.newImageRect("preguntados.png", 50, 50)
+    local imagen = display.newImageRect("ruleta.png", 50, 50)
     imagen.x = centrox-(centrox/1.4)
     imagen.y = 50
     screenGroup:insert( imagen )
     local textperf = display.newText("Perfil de", centrox, 90, native.systemFont, 30)
     textperf:setFillColor( 0, 0, 0 )
     screenGroup:insert( textperf )
-    logoGrande = display.newImageRect("preguntados.png", 150, 150)
+    logoGrande = display.newImageRect("ruleta.png", 150, 150)
     logoGrande.x = centrox
     logoGrande.y = 220
     screenGroup:insert( logoGrande )

@@ -34,7 +34,7 @@ function scene:create( event )
     screenGroup:insert( text )
     local logo = display.newImage("logo.png", centrox, 150)
     screenGroup:insert( logo )
-    local imagen = display.newImageRect("preguntados.png", 150, 150)
+    local imagen = display.newImageRect("ruleta.png", 150, 150)
     imagen.x = centrox
     imagen.y = 280
     screenGroup:insert( imagen )
