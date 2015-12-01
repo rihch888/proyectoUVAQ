@@ -103,7 +103,6 @@ settings =
 
 		usesPermissions =
 		{
-			"android.permission.RECEIVE_BOOT_COMPLETED",
 			"android.permission.INTERNET",
 			"android.permission.CAMERA",
       		"android.permission.WRITE_EXTERNAL_STORAGE",

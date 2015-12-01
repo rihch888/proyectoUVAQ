@@ -430,7 +430,7 @@ end
     button9.x = _W*0.5
     button9.y = _H*0.98
 
-    button9:setLabel( "deslinkear")
+    button9:setLabel( "borrar cuenta")
     --]]
     ----------------------------
 

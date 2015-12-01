@@ -104,8 +104,32 @@ local registrar = widget.newButton
 }
 screenGroup:insert( registrar )
 
+----------------------------
+local function atras( event )
+  composer.gotoScene("opcionRegistro")
+end
+
+local atras = widget.newButton
+{
+    left = 70,
+    top = 630,
+    id = "button1",
+    label = "atras",
+    onEvent = atras,
+    shape="roundedRect",
+    width = 180,
+    height = 40,
+    cornerRadius = 3,
+    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+}
+atras.x = _W*0.5
+atras.y = _H*0.7
+screenGroup:insert( atras )
+--------------------
+
 local function onKeyEvent( event )
-    if ( event.keyName == "back" ) then
+    if ( event.keyName == "back" and event.phase == "up") then
         local platformName = system.getInfo( "platformName" )
         if ( platformName == "Android" ) or ( platformName == "WinPhone" ) then
             native.setKeyboardFocus(nil)

@@ -24,17 +24,44 @@ function scene:create( event )
     textreg:setFillColor( 0, 0, 0 )
     screenGroup:insert( textreg )
 
+    --------------------->>>
+        local function irMenuSesion( event )
+      
+
+  
+      local function onUpdateUser( event )
+        composer.gotoScene("menuSesion")
+      end
+    ------------------------
+    local function onGetMe( event )
+        if event.code == parse.EXPIRED then
+            local alert = native.showAlert( "Error!","Vuelve a iniciar sesion", { "OK" }, onComplete )
+        else
+
+        --facebook.login( "671856566284765", listener, {"publish_actions"}  )
+        --statusMessage.textObject.text = response.name
+
+        userObjId = event.response.objectId
+        local dataTable = { ["nombre"] = response.name}
+        parse:updateUser( userObjId, dataTable, onUpdateUser )
+        end
+    end
+    parse:getMe( onGetMe )
+    --------------------------
+    
+    end
+
+    -------------------->>>
+
     local function onUpdateUser(  )
       composer.gotoScene("menuSesion")
     end
 
     local function registroFace( event )
-      if(event.phase=="ended")then
-        local sessionToken, sessionExpiry
-        local email = ""
-        local nombre1 = ""
-        local nombre2 = ""
-        local userObjId = nil
+         
+     if(event.phase=="ended")then
+      local sessionToken, sessionExpiry
+ 
 local function doParseLogin( fb_user_id, fb_session_token, fb_session_expiry )
  
  
@@ -53,17 +80,12 @@ local function doParseLogin( fb_user_id, fb_session_token, fb_session_expiry )
     --print( event.response.objectId )
     userObjId = event.response.objectId
     if event.status == 201 then
-      local alert = native.showAlert( "aleta!","funciona", { "OK" }, irMenuSesion )
+      irMenuSesion()
     else
       --print( event.response.authData.facebook.id )
       --local user = event.response.objectId
       --local alert = native.showAlert( "aleta!","funciona", { "OK" }, irMenuSesion )
-      --local nombreCompleto = nombre1.." "..nombre2
-      local alert = native.showAlert( "aleta!",nombre1, { "OK" }, irMenuSesion )
-      local dataTable = { ["nombre"] = nombre1, ["email"] = email, ["emailVerified"] = true}
-      parse:updateUser( userObjId, dataTable, onUpdateUser )
-
-
+      irMenuSesion()
     end
   end
   parse:loginUser( { authData = authData }, onLoginUser )
@@ -85,18 +107,21 @@ local function doFacebookLogin()
         end
       end
     elseif event.type == "request" then
+      response = event.response
       if not event.isError then
-        local response = json.decode( event.response )
+        response = json.decode( event.response )
+        
+        --local response = json.decode( event.response )
+        --e_mail = response.email
 
-        nombre1 = response.first_name
-        nombre2 = response.last_name
-        email = response.email
  
         if response.id then
           local fb_user_id = response.id
           --all set, lets create/login Parse User
           doParseLogin( fb_user_id, sessionToken, sessionExpiry )
         end
+      else
+         native.showAlert( "Ooops!", "There was a problem connecting to Facebook.  Check your Internet connection and try again...", { "Ok" } )
       end
     end
   end
@@ -104,13 +129,13 @@ local function doFacebookLogin()
   facebook.login( 
     "671856566284765",
     facebookListener, 
-    { "publish_actions", "email", "public_profile" } 
+    { "publish_actions","email"} 
   )
  
 end
  
 doFacebookLogin()
-      end
+     end
     end
 
 local function registroCorreo( event )
@@ -142,7 +167,7 @@ local registrar = widget.newButton
     label = "Regístrate con tu dirección \nde correo electrónico",
     onEvent = registroCorreo,
     shape="roundedRect",
-    width = _W*0.7,
+    width = _W*0.8,
     height = 40,
     cornerRadius = 3,
     fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
@@ -152,18 +177,51 @@ registrar.x= _W*0.5
 registrar.y = _H*0.6
 screenGroup:insert( registrar )
 
+--[[
 local function onKeyEvent( event )
-    if ( event.keyName == "back" and event.phase == "up") then
+    if (event.phase == "up" and event.keyName == "back") then
         local platformName = system.getInfo( "platformName" )
         if ( platformName == "Android" ) or ( platformName == "WinPhone" ) then
             native.setKeyboardFocus(nil)
-            composer.gotoScene("menuInicio")
+           
             return true
         end
     end
     return false
 end
+--]]
+--[[
+local function onKeyEvent(event)
+    if ( event.phase == "up" and event.keyName == "back") then
+        composer.removeScene("opcionRegistro")
+        composer.gotoScene("menuInicio")
+        return true
+    end
+    return false
+    end
 Runtime:addEventListener( "key", onKeyEvent )
+--]]
+local function atras( event )
+  composer.gotoScene("menuInicio")
+end
+
+local atras = widget.newButton
+{
+    left = 70,
+    top = 630,
+    id = "button1",
+    label = "atras",
+    onEvent = atras,
+    shape="roundedRect",
+    width = 180,
+    height = 40,
+    cornerRadius = 3,
+    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+}
+atras.x = _W*0.5
+atras.y = _H*0.7
+screenGroup:insert( atras )
 
 end
 
