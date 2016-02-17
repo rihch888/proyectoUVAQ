@@ -132,9 +132,9 @@ function scene:show( event )
 
 		local function girar()
 			print("dio tap a ruleta")
-			local categorias = {"Historia Universal", "Historia de México", "Arte", "Literatura", "Filosofía", "Psicología", "Religión", "Ideario UVAQ"}
+			local categorias = {"Pintura", "Arquitectura", "Literatura", "Música Clásica", "Filosofía Institucional"}
 			if presionado == false then
-				random = math.random(8)
+				random = math.random(5)
 				random2 = 1
 				if random == 1 then
 					random2=350
@@ -155,18 +155,6 @@ function scene:show( event )
 				if random == 5 then
 					random2=750
 					categoriaRand=categorias[5]
-				end
-				if random == 6 then
-					random2=750
-					categoriaRand=categorias[6]
-				end
-				if random == 7 then
-					random2=850
-					categoriaRand=categorias[7]
-				end
-				if random == 8 then
-					random2=950
-					categoriaRand=categorias[8]
 				end
 				print(random)
 				print(categoriaRand)

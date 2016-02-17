@@ -28,11 +28,11 @@ function scene:create( event )
     screenGroup:insert( background )
     local fondo = nil
     local textoOpcion = nil 
-    local text = display.newImageRect("texto.png", 200, 50)
-    text.x = centrox
-    text.y = 80
-    screenGroup:insert( text )
-    local logo = display.newImage("logo.png", centrox, 150)
+    local myText = display.newText( "Preguntas", 100, 60, native.systemFont, 42 )
+    myText:setFillColor( 0, 0, 0 )
+    myText.x=centrox
+    screenGroup:insert( myText )
+    local logo = display.newImage("logo.png", centrox, 140)
     screenGroup:insert( logo )
     local imagen = display.newImageRect("ruleta.png", 150, 150)
     imagen.x = centrox
@@ -121,8 +121,8 @@ function scene:destroy( event )
     local sceneGroup = self.view
     background:removeSelf()
     background=nil
-    text:removeSelf()
-    text=nil
+    myText:removeSelf()
+    myText=nil
     logo:removeSelf()
     logo=nil
     imagen:removeSelf()

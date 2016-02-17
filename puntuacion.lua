@@ -64,7 +64,7 @@ function scene:create( event )
             {   
             left = 0,
             top = 160,
-            height = 450,
+            height = 340,
             width = 330,
             onRowRender = onRowRender
             }
@@ -82,6 +82,30 @@ function scene:create( event )
     --["className"] = parse.USER_CLASS, ["objectId"] = user_object_id } } 
     }
     parse:getObjects( "Score", query, onGetObjects )
+
+     local function regresar( event )
+        if ( "ended" == event.phase ) then
+        button2:removeSelf()
+        composer.removeScene("puntuacion")
+        composer.gotoScene("menuSesion")
+        end
+    end
+
+    button2 = widget.newButton
+    {
+    label = "Regresar",
+    onEvent = regresar,
+    emboss = false,
+    --properties for a rounded rectangle button...
+    shape="roundedRect",
+    width = 180,
+    height = 40,
+    cornerRadius = 3,
+    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+    }
+    button2.x = _W*0.5
+    button2.y = _H*0.95
 
 function onKeyEvent(event)---NOT WORK
     if ( event.keyName == "back" and event.phase == "up") then
@@ -118,26 +142,7 @@ function scene:hide( event )
 
 function scene:destroy( event )
     local sceneGroup = self.view
-    background:removeSelf()
-    background=nil
-    text:removeSelf()
-    text=nil
-    logo:removeSelf()
-    logo=nil
-    imagen:removeSelf()
-    imagen=nil
-    labelPuntuacion:removeSelf()
-    labelPuntuacion=nil
-    labelnombre:removeSelf()
-    labelnombre=nil
-    labelscore:removeSelf()
-    labelscore=nil
-    tableView:removeSelf()
-    tableView=nil
-    rowtitle:removeSelf()
-    rowTitle=nil
-    rowtitle2:removeSelf()
-    rowTitle2=nil
+   
 end
 
 ---------------------------------------------------------------------------------
