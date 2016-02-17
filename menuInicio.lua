@@ -38,14 +38,7 @@ function scene:create( event )
     imagen.x = centrox
     imagen.y = 280
     screenGroup:insert( imagen )
-    local conf = display.newImageRect("conf.png", 60, 60)
-    conf.x = centrox-(centrox/3)
-    conf.y = 520
-    screenGroup:insert( conf )
-    local help = display.newImageRect("help.png", 60, 60)
-    help.x = centrox+(centrox/3)
-    help.y = 520
-    screenGroup:insert( help )
+
 
     local function entra( event )
         if ( "ended" == event.phase ) then
