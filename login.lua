@@ -90,7 +90,8 @@ function scene:create( event )
                 local alert = native.showAlert( "Error!", "Correo electrónico o contraseña incorrectos", { "OK" }, onComplete )
                 end
             end
-            parse:loginUser( { ["username"] = email.text, ["password"] = pass.text }, onLoginUser )
+            --parse:loginUser( { ["username"] = email.text, ["password"] = pass.text }, onLoginUser )
+            parse:loginUser( { ["username"] = "bozz-9@hotmail.com", ["password"] = "123" }, onLoginUser )
         end
     end
 

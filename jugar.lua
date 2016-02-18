@@ -12,6 +12,11 @@ local puntuacionreal = 0
 function scene:create( event )
 local screenGroup = self.view
 
+local fondo = nil
+local esperarImg = true
+local mostrarBotones = {}
+local loading = {}
+local mostrarPregunta = {}
 
 centrox = display.contentCenterX
 centroy = display.contentCenterY
@@ -153,7 +158,39 @@ local nombreCategoria = display.newText(categoria, centrox, 140, native.systemFo
 nombreCategoria:setFillColor(0,0,0)
 screenGroup:insert( nombreCategoria )
 
+local function mostrarPregunta(event)
+    fondo:removeSelf()
+    fondo = nil
+    textoGuardar:removeSelf()
+    mostrarBotones()
+    Runtime:addEventListener("enterFrame",checkTime)
+end
 
+function loading(event)
+    Runtime:removeEventListener("enterFrame", checkTime)
+     fondo = display.newRect(display.contentCenterX, display.contentCenterY+display.contentCenterY*0.1, display.contentWidth, display.contentHeight*0.75 )
+                fondo:setFillColor(1,1,1)
+                --fondo.alpha=0.8
+                screenGroup:insert(fondo)
+                
+
+                local opcionesTexto2 = {
+                    text ="Cargando...", 
+                    font = native.systemFont, 
+                    fontSize =40,
+                    x=  _W*0.5,
+                    y=  _H*0.5
+                }
+
+                textoGuardar = display.newText(opcionesTexto2)
+                textoGuardar:setTextColor( 0, 0, 0 )
+                screenGroup:insert(textoGuardar)
+                
+end
+
+
+
+loading()
 
 local function onGetObjects( event )
     if not event.error then
@@ -235,16 +272,21 @@ local function onGetObjects( event )
                 imagen.width=175
                 imagen.height=150
                 screenGroup:insert( imagen )
+                
+                mostrarPregunta()           
+                
             end
 
             if ext==".png" or ext==".jpg" or ext==".jpeg" then
                 display.loadRemoteImage(url,"GET", onImagen, name)
+              
             elseif ext==".wav" or ext==".mp3" then
                 print("sonido: "..num)
                 local function networkListener( event )
                     if ( event.phase == "ended" ) then
                         print( "Entra correctamente!!!" )
                         sound = audio.loadSound(event.response.filename, system.TemporaryDirectory )
+
                     end
                 end
 
@@ -264,11 +306,13 @@ local function onGetObjects( event )
                     --media.playSound( "audio.wav", system.TemporaryDirectory )
                 end
                 play:addEventListener("tap", playAudio)
+                mostrarPregunta()
             end
         else
             pregunta = display.newText(event.results[num].pregunta, centrox, 260, native.systemFont, 18)
             pregunta:setFillColor(0,0,0)
             screenGroup:insert(pregunta)
+            mostrarPregunta()
         end
 
         function boton1(event) 
@@ -377,21 +421,7 @@ local function onGetObjects( event )
             end
         end
 
-        b1 = widget.newButton
-        {
-            left = 60,
-            top = 380,
-            id = "button1",
-            label = res1,
-            onEvent = boton1,
-            shape="roundedRect",
-            width = 200,
-            height = 40,
-            cornerRadius = 3,
-            fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
-            labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
-        }
-        screenGroup:insert( b1 )
+       
 
         function boton2(event) 
             if event.phase == "ended" then
@@ -500,21 +530,6 @@ local function onGetObjects( event )
         end
 
 
-        b2 = widget.newButton
-        {
-            left = 60,
-            top = 430,
-            id = "button2",
-            label = res2,
-            onEvent = boton2,
-            shape="roundedRect",
-            width = 200,
-            height = 40,
-            cornerRadius = 3,
-            fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
-            labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
-        }
-        screenGroup:insert( b2 )
 
 
         function boton3(event) 
@@ -620,7 +635,41 @@ local function onGetObjects( event )
             end
         end
 
-        b3 = widget.newButton
+        function mostrarBotones( )
+
+         b1 = widget.newButton
+        {
+            left = 60,
+            top = 380,
+            id = "button1",
+            label = res1,
+            onEvent = boton1,
+            shape="roundedRect",
+            width = 200,
+            height = 40,
+            cornerRadius = 3,
+            fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+            labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+        }
+        screenGroup:insert( b1 )
+
+        b2 = widget.newButton
+        {
+            left = 60,
+            top = 430,
+            id = "button2",
+            label = res2,
+            onEvent = boton2,
+            shape="roundedRect",
+            width = 200,
+            height = 40,
+            cornerRadius = 3,
+            fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+            labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+        }
+        screenGroup:insert( b2 )
+
+         b3 = widget.newButton
         {
             left = 60,
             top = 480,
@@ -635,6 +684,9 @@ local function onGetObjects( event )
             labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
         }
         screenGroup:insert( b3 )
+
+end
+       --boton 3
     end
 end
 local mydata = require( "mydata" )
@@ -745,7 +797,7 @@ function scene:show( event )
                 end
             end
         end
-        Runtime:addEventListener("enterFrame", checkTime)
+        --Runtime:addEventListener("enterFrame", checkTime)
         ---------------------
 
     end
