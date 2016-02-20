@@ -14,9 +14,21 @@ local screenGroup = self.view
 
 local fondo = nil
 local esperarImg = true
-local mostrarBotones = {}
+
 local loading = {}
-local mostrarPregunta = {}
+
+--local mostrarBotones = {}
+--local mostrarPregunta = {}
+local mostrar  = {}
+
+
+
+local res1
+local res2
+local res3
+
+
+
 
 centrox = display.contentCenterX
 centroy = display.contentCenterY
@@ -158,164 +170,7 @@ local nombreCategoria = display.newText(categoria, centrox, 140, native.systemFo
 nombreCategoria:setFillColor(0,0,0)
 screenGroup:insert( nombreCategoria )
 
-local function mostrarPregunta(event)
-    fondo:removeSelf()
-    fondo = nil
-    textoGuardar:removeSelf()
-    mostrarBotones()
-    Runtime:addEventListener("enterFrame",checkTime)
-end
-
-function loading(event)
-    Runtime:removeEventListener("enterFrame", checkTime)
-     fondo = display.newRect(display.contentCenterX, display.contentCenterY+display.contentCenterY*0.1, display.contentWidth, display.contentHeight*0.75 )
-                fondo:setFillColor(1,1,1)
-                --fondo.alpha=0.8
-                screenGroup:insert(fondo)
-                
-
-                local opcionesTexto2 = {
-                    text ="Cargando...", 
-                    font = native.systemFont, 
-                    fontSize =40,
-                    x=  _W*0.5,
-                    y=  _H*0.5
-                }
-
-                textoGuardar = display.newText(opcionesTexto2)
-                textoGuardar:setTextColor( 0, 0, 0 )
-                screenGroup:insert(textoGuardar)
-                
-end
-
-
-
-loading()
-
-local function onGetObjects( event )
-    if not event.error then
-
-        local mydata = require( "mydata" )
-        print("-------------------------")
-        print("Score: "..mydata.score)
-        print("-------------------------")
-        print( #event.results )
-        local num = math.random(#event.results)
-        print(num)
-        print(event.results[num].pregunta)
-        local rand1 = math.random(3)
-        local rand2 = math.random(3)
-        local rand3 = math.random(3)
-        while rand1==rand2 or rand2==rand3 or rand1 == rand3 do
-            rand1 = math.random(3)
-            rand2 = math.random(3)
-            rand3 = math.random(3)
-        end
-        botonAudioActivo=false
-     
-        print("Random1: "..rand1.." Random2: "..rand2.." Random3: "..rand3)
-        local res1, res2, res3
-        if rand1 == 1 then
-            res1 = event.results[num].respuesta1
-        elseif rand1 == 2 then
-            res1 = event.results[num].respuesta2
-        elseif rand1 == 3 then
-            res1 = event.results[num].respuesta3
-        end
-     
-        if rand2 == 1 then
-            res2 = event.results[num].respuesta1
-        elseif rand2 == 2 then
-            res2 = event.results[num].respuesta2
-        elseif rand2 == 3 then
-            res2 = event.results[num].respuesta3
-        end
-     
-        if rand3 == 1 then
-            res3 = event.results[num].respuesta1
-        elseif rand3 == 2 then
-            res3 = event.results[num].respuesta2
-        elseif rand3 == 3 then
-            res3 = event.results[num].respuesta3
-        end
-     
-        local correcta = event.results[num].correcta
-
-        if event.results[num].archivo~=nil then
-            pregunta = display.newText(event.results[num].pregunta, centrox, 185, native.systemFont, 18)
-            pregunta:setFillColor(0,0,0)
-            screenGroup:insert(pregunta)
-            local url = event.results[num].archivo.url
-            local name = event.results[num].archivo.name
-            function GetFileExtension(url)
-                local str = url
-                    local temp = ""
-                    local result = "." 
-
-                    for i = str:len(), 1, -1 do
-                        if str:sub(i,i) ~= "." then
-                            temp = temp..str:sub(i,i)
-                        else
-                        break
-                        end
-                    end
-                    for j = temp:len(), 1, -1 do
-                        result = result..temp:sub(j,j)
-                    end
-                return result
-            end
-            local ext=GetFileExtension(name)
-            local function onImagen(event)
-                imagen = event.target
-                imagen.x=centrox
-                imagen.y=centroy
-                imagen.width=175
-                imagen.height=150
-                screenGroup:insert( imagen )
-                
-                mostrarPregunta()           
-                
-            end
-
-            if ext==".png" or ext==".jpg" or ext==".jpeg" then
-                display.loadRemoteImage(url,"GET", onImagen, name)
-              
-            elseif ext==".wav" or ext==".mp3" then
-                print("sonido: "..num)
-                local function networkListener( event )
-                    if ( event.phase == "ended" ) then
-                        print( "Entra correctamente!!!" )
-                        sound = audio.loadSound(event.response.filename, system.TemporaryDirectory )
-
-                    end
-                end
-
-                local params = {}
-                params.progress = true
-
-                network.download(url,"GET",networkListener,params,name,system.TemporaryDirectory)
-
-                play = display.newImageRect("play.png", 70, 70)
-                play.x=centrox
-                play.y=centroy
-                screenGroup:insert( play )
-                botonAudioActivo=true
-                function playAudio()
-                    audio.play( sound )
-
-                    --media.playSound( "audio.wav", system.TemporaryDirectory )
-                end
-                play:addEventListener("tap", playAudio)
-                mostrarPregunta()
-            end
-        else
-            pregunta = display.newText(event.results[num].pregunta, centrox, 260, native.systemFont, 18)
-            pregunta:setFillColor(0,0,0)
-            screenGroup:insert(pregunta)
-            mostrarPregunta()
-        end
-
-        function boton1(event) 
+ function boton1(event) 
             if event.phase == "ended" then
             
                 --print("Res1 "..res1.." correcta "..correcta)
@@ -635,8 +490,8 @@ local function onGetObjects( event )
             end
         end
 
-        function mostrarBotones( )
-
+function mostrarBotones( )
+            print(">>>entro en mostrarBotones<<<")
          b1 = widget.newButton
         {
             left = 60,
@@ -686,6 +541,556 @@ local function onGetObjects( event )
         screenGroup:insert( b3 )
 
 end
+
+local function mostrarPregunta(event)
+    fondo:removeSelf()
+    fondo = nil
+    textoGuardar:removeSelf()
+    mostrarBotones()
+    Runtime:addEventListener("enterFrame",checkTime)
+end
+
+function mostrar(event)
+    print("!!!!!!!!!!!!!")
+    mostrarBotones()
+    Runtime:addEventListener("enterFrame",checkTime)
+end
+
+function loading(event)
+    Runtime:removeEventListener("enterFrame", checkTime)
+     fondo = display.newRect(display.contentCenterX, display.contentCenterY+display.contentCenterY*0.1, display.contentWidth, display.contentHeight*0.75 )
+                fondo:setFillColor(1,1,1)
+                --fondo.alpha=0.8
+                screenGroup:insert(fondo)
+                
+
+                local opcionesTexto2 = {
+                    text ="Cargando...", 
+                    font = native.systemFont, 
+                    fontSize =40,
+                    x=  _W*0.5,
+                    y=  _H*0.5
+                }
+
+                textoGuardar = display.newText(opcionesTexto2)
+                textoGuardar:setTextColor( 0, 0, 0 )
+                screenGroup:insert(textoGuardar)
+                
+end
+
+
+
+loading()
+
+--local res1
+--local res2
+--local res3
+
+local function onGetObjects( event )
+    if not event.error then
+
+        local mydata = require( "mydata" )
+        print("-------------------------")
+        print("Score: "..mydata.score)
+        print("-------------------------")
+        print( #event.results )
+        local num = math.random(#event.results)
+        print(num)
+        print(event.results[num].pregunta)
+        local rand1 = math.random(3)
+        local rand2 = math.random(3)
+        local rand3 = math.random(3)
+        while rand1==rand2 or rand2==rand3 or rand1 == rand3 do
+            rand1 = math.random(3)
+            rand2 = math.random(3)
+            rand3 = math.random(3)
+        end
+        botonAudioActivo=false
+     
+        print("Random1: "..rand1.." Random2: "..rand2.." Random3: "..rand3)
+        --local res1, res2, res3
+        if rand1 == 1 then
+            res1 = event.results[num].respuesta1
+            print(event.results[num].respuesta1.." <<<<<<<<")
+        elseif rand1 == 2 then
+            res1 = event.results[num].respuesta2
+        elseif rand1 == 3 then
+            res1 = event.results[num].respuesta3
+        end
+     
+        if rand2 == 1 then
+            res2 = event.results[num].respuesta1
+             print(event.results[num].respuesta1.." ++++++++++")
+        elseif rand2 == 2 then
+            res2 = event.results[num].respuesta2
+        elseif rand2 == 3 then
+            res2 = event.results[num].respuesta3
+        end
+     
+        if rand3 == 1 then
+            res3 = event.results[num].respuesta1
+             print(event.results[num].respuesta1.." ==========")
+        elseif rand3 == 2 then
+            res3 = event.results[num].respuesta2
+        elseif rand3 == 3 then
+            res3 = event.results[num].respuesta3
+        end
+     
+        local correcta = event.results[num].correcta
+
+        if event.results[num].archivo~=nil then
+            pregunta = display.newText(event.results[num].pregunta, centrox, 185, native.systemFont, 18)
+            pregunta:setFillColor(0,0,0)
+            screenGroup:insert(pregunta)
+            local url = event.results[num].archivo.url
+            local name = event.results[num].archivo.name
+            function GetFileExtension(url)
+                local str = url
+                    local temp = ""
+                    local result = "." 
+
+                    for i = str:len(), 1, -1 do
+                        if str:sub(i,i) ~= "." then
+                            temp = temp..str:sub(i,i)
+                        else
+                        break
+                        end
+                    end
+                    for j = temp:len(), 1, -1 do
+                        result = result..temp:sub(j,j)
+                    end
+                return result
+            end
+            local ext=GetFileExtension(name)
+            local function onImagen(event)
+                imagen = event.target
+                imagen.x=centrox
+                imagen.y=centroy
+                imagen.width=175
+                imagen.height=150
+                screenGroup:insert( imagen )
+                
+                mostrarPregunta()    
+                --mostrar()       
+                
+            end
+
+            if ext==".png" or ext==".jpg" or ext==".jpeg" then
+                display.loadRemoteImage(url,"GET", onImagen, name)
+              
+            elseif ext==".wav" or ext==".mp3" then
+                print("sonido: "..num)
+                local function networkListener( event )
+                    if ( event.phase == "ended" ) then
+                        print( "Entra correctamente!!!" )
+                        sound = audio.loadSound(event.response.filename, system.TemporaryDirectory )
+
+                        
+                    end
+                end
+
+                local params = {}
+                params.progress = true
+
+                network.download(url,"GET",networkListener,params,name,system.TemporaryDirectory)
+
+                play = display.newImageRect("play.png", 70, 70)
+                play.x=centrox
+                play.y=centroy
+                screenGroup:insert( play )
+                botonAudioActivo=true
+                --mostrarPregunta()
+                function playAudio()
+                    audio.play( sound )
+
+                    --media.playSound( "audio.wav", system.TemporaryDirectory )
+                end
+                play:addEventListener("tap", playAudio)
+                
+            end
+        else
+            pregunta = display.newText(event.results[num].pregunta, centrox, 260, native.systemFont, 18)
+            pregunta:setFillColor(0,0,0)
+            screenGroup:insert(pregunta)
+            print(">>>pregunta SOLO TEXTO<<<")
+            mostrarPregunta()
+            --mostrar()
+
+        end
+        --[[
+        function boton1(event) 
+            if event.phase == "ended" then
+            
+                --print("Res1 "..res1.." correcta "..correcta)
+                displayTime.isVisible=false
+                --progressView:removeSelf()
+                Runtime:removeEventListener("enterFrame", checkTime)
+                if res1 == correcta then
+                    local mydata = require( "mydata" )
+                    mydata.score = mydata.score+1
+                    pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
+                    pant:setFillColor(0, 0, 0, 0.9)
+                    screenGroup:insert( pant )
+                    b1:setEnabled( false )
+                    b2:setEnabled( false )
+                    b3:setEnabled( false )
+                    bexit:setEnabled( false )
+                    if botonAudioActivo == true then
+                        play:removeEventListener("tap", playAudio)
+                    end
+                    palomita = display.newImageRect("paloma.png",60,60)
+                    palomita.x = centrox
+                    palomita.y = 200
+                    screenGroup:insert( palomita )
+                    correcto = display.newText("Correcto", centrox, 130, native.systemFont, 38)
+                    screenGroup:insert( correcto )
+                    continuar = widget.newButton
+                    {
+                    left = 85,
+                    top = 270,
+                    label = "Continuar",
+                    onEvent = siguiente,
+                    shape="roundedRect",
+                    width = 150,
+                    height = 40,
+                    cornerRadius = 10,
+                    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+                    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+                    }
+                    screenGroup:insert( continuar )
+                else
+                    b1:setEnabled( false )
+                    b2:setEnabled( false )
+                    b3:setEnabled( false )
+                    bexit:setEnabled( false )
+                    if botonAudioActivo == true then
+                        play:removeEventListener("tap", playAudio)
+                    end
+                    local mydata = require( "mydata" )
+                    mydata.lives=mydata.lives-1 
+                    if mydata.lives == 0 then
+                        local mydata = require( "mydata" )
+                        pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
+                        pant:setFillColor(0, 0, 0, 0.9)
+                        screenGroup:insert( pant )
+                        acaba2 = display.newText("Oportunidades", centrox, 100, native.systemFont, 38)
+                        screenGroup:insert( acaba2 )
+                        acaba3 = display.newText("Agotadas!", centrox, 150, native.systemFont, 38)
+                        screenGroup:insert( acaba3 )
+                        sad = display.newImageRect("sad.png",150,150)
+                        sad.x = centrox
+                        sad.y = 270
+                        screenGroup:insert( sad )
+                        continuar = widget.newButton
+                        {
+                        left = 85,
+                        top = 370,
+                        label = "Continuar",
+                        onEvent = exit,
+                        shape="roundedRect",
+                        width = 150,
+                        height = 40,
+                        cornerRadius = 10,
+                        fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+                        labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+                        }
+                        screenGroup:insert( continuar )
+                    else
+                        pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
+                        pant:setFillColor(0, 0, 0, 0.9)
+                        screenGroup:insert( pant )                 
+                        tache = display.newImageRect("tache.png",60,60)
+                        tache.x = centrox
+                        tache.y = 200
+                        screenGroup:insert( tache )
+                        incorrecto = display.newText("Incorrecto", centrox, 130, native.systemFont, 38)
+                        screenGroup:insert( incorrecto )
+                        continuar = widget.newButton
+                        {
+                        left = 85,
+                        top = 270,
+                        label = "Continuar",
+                        onEvent = siguiente,
+                        shape="roundedRect",
+                        width = 150,
+                        height = 40,
+                        cornerRadius = 10,
+                        fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+                        labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+                        }
+                        screenGroup:insert( continuar )
+                    end
+                end
+            end
+        end
+
+       
+
+        function boton2(event) 
+            if event.phase == "ended" then
+
+                Runtime:removeEventListener("enterFrame", checkTime)
+                if res2 == correcta then
+                    local mydata = require( "mydata" )
+                    mydata.score = mydata.score+1
+                    pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
+                    pant:setFillColor(0, 0, 0, 0.9)
+                    screenGroup:insert( pant )
+                    b1:setEnabled( false )
+                    b2:setEnabled( false )
+                    b3:setEnabled( false )
+                    bexit:setEnabled( false )
+                    if botonAudioActivo == true then
+                        play:removeEventListener("tap", playAudio)
+                    end
+                    palomita = display.newImageRect("paloma.png",60,60)
+                    palomita.x = centrox
+                    palomita.y = 200
+                    screenGroup:insert( palomita )
+                    correcto = display.newText("Correcto", centrox, 130, native.systemFont, 38)
+                    screenGroup:insert( correcto )
+                    continuar = widget.newButton
+                    {
+                    left = 85,
+                    top = 270,
+                    label = "Continuar",
+                    onEvent = siguiente,
+                    shape="roundedRect",
+                    width = 150,
+                    height = 40,
+                    cornerRadius = 10,
+                    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+                    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+                    }
+                    screenGroup:insert( continuar )
+                else
+                    b1:setEnabled( false )
+                    b2:setEnabled( false )
+                    b3:setEnabled( false )
+                    bexit:setEnabled( false )
+                    if botonAudioActivo == true then
+                        play:removeEventListener("tap", playAudio)
+                    end
+                    if botonAudioActivo == true then
+                        play:removeEventListener("tap", playAudio)
+                    end
+                    local mydata = require( "mydata" )
+                    mydata.lives=mydata.lives-1 
+                    if mydata.lives == 0 then
+                        local mydata = require( "mydata" )
+                        pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
+                        pant:setFillColor(0, 0, 0, 0.9)
+                        screenGroup:insert( pant )
+                        acaba2 = display.newText("Oportunidades", centrox, 100, native.systemFont, 38)
+                        screenGroup:insert( acaba2 )
+                        acaba3 = display.newText("Agotadas!", centrox, 150, native.systemFont, 38)
+                        screenGroup:insert( acaba3 )
+                        sad = display.newImageRect("sad.png",150,150)
+                        sad.x = centrox
+                        sad.y = 270
+                        screenGroup:insert( sad )
+                        continuar = widget.newButton
+                        {
+                        left = 85,
+                        top = 370,
+                        label = "Continuar",
+                        onEvent = exit,
+                        shape="roundedRect",
+                        width = 150,
+                        height = 40,
+                        cornerRadius = 10,
+                        fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+                        labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+                        }
+                        screenGroup:insert( continuar )
+                    else
+                        pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
+                        pant:setFillColor(0, 0, 0, 0.9)
+                        screenGroup:insert( pant )
+                        tache = display.newImageRect("tache.png",60,60)
+                        tache.x = centrox
+                        tache.y = 200
+                        screenGroup:insert( tache )
+                        incorrecto = display.newText("Incorrecto", centrox, 130, native.systemFont, 38)
+                        screenGroup:insert( incorrecto )
+                        continuar = widget.newButton
+                        {
+                        left = 85,
+                        top = 270,
+                        label = "Continuar",
+                        onEvent = siguiente,
+                        shape="roundedRect",
+                        width = 150,
+                        height = 40,
+                        cornerRadius = 10,
+                        fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+                        labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+                        }
+                        screenGroup:insert( continuar )
+                    end
+                end
+            end
+        end
+
+
+
+
+        function boton3(event) 
+            if event.phase == "ended" then
+                
+                Runtime:removeEventListener("enterFrame", checkTime)
+                if res3 == correcta then
+                    local mydata = require( "mydata" )
+                    mydata.score = mydata.score+1
+                    pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
+                    pant:setFillColor(0, 0, 0, 0.9)
+                    screenGroup:insert( pant )
+                    b1:setEnabled( false )
+                    b2:setEnabled( false )
+                    b3:setEnabled( false )
+                    bexit:setEnabled( false )
+                    if botonAudioActivo == true then
+                        play:removeEventListener("tap", playAudio)
+                    end
+                    palomita = display.newImageRect("paloma.png",60,60)
+                    palomita.x = centrox
+                    palomita.y = 200
+                    screenGroup:insert( palomita )
+                    correcto = display.newText("Correcto", centrox, 130, native.systemFont, 38)
+                    screenGroup:insert( correcto )
+                    continuar = widget.newButton
+                    {
+                    left = 85,
+                    top = 270,
+                    label = "Continuar",
+                    onEvent = siguiente,
+                    shape="roundedRect",
+                    width = 150,
+                    height = 40,
+                    cornerRadius = 10,
+                    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+                    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+                    }
+                    screenGroup:insert( continuar )
+                else
+                    b1:setEnabled( false )
+                    b2:setEnabled( false )
+                    b3:setEnabled( false )
+                    bexit:setEnabled( false )
+                    if botonAudioActivo == true then
+                        play:removeEventListener("tap", playAudio)
+                    end
+                    local mydata = require( "mydata" )
+                    mydata.lives=mydata.lives-1
+                    if mydata.lives == 0 then
+                        local mydata = require( "mydata" )
+                        pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
+                        pant:setFillColor(0, 0, 0, 0.9)
+                        screenGroup:insert( pant )
+                        aacaba2 = display.newText("Oportunidades", centrox, 100, native.systemFont, 38)
+                        screenGroup:insert( acaba2 )
+                        acaba3 = display.newText("Agotadas!", centrox, 150, native.systemFont, 38)
+                        screenGroup:insert( acaba3 )
+                        sad = display.newImageRect("sad.png",150,150)
+                        sad.x = centrox
+                        sad.y = 270
+                        screenGroup:insert( sad )
+                        continuar = widget.newButton
+                        {
+                        left = 85,
+                        top = 370,
+                        label = "Continuar",
+                        onEvent = exit,
+                        shape="roundedRect",
+                        width = 150,
+                        height = 40,
+                        cornerRadius = 10,
+                        fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+                        labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+                        }
+                        screenGroup:insert( continuar )
+                    else
+                        pant = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
+                        pant:setFillColor(0, 0, 0, 0.9)
+                        screenGroup:insert( pant )     
+                        tache = display.newImageRect("tache.png",60,60)
+                        tache.x = centrox
+                        tache.y = 200
+                        screenGroup:insert( tache )
+                        incorrecto = display.newText("Incorrecto", centrox, 130, native.systemFont, 38)
+                        screenGroup:insert( incorrecto )
+                        continuar = widget.newButton
+                        {
+                        left = 85,
+                        top = 270,
+                        label = "Continuar",
+                        onEvent = siguiente,
+                        shape="roundedRect",
+                        width = 150,
+                        height = 40,
+                        cornerRadius = 10,
+                        fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+                        labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+                        }
+                        screenGroup:insert( continuar )
+                    end
+                end
+            end
+        end
+        --]]
+--[[
+        function mostrarBotones( )
+            print(">>>entro en mostrarBotones<<<")
+         b1 = widget.newButton
+        {
+            left = 60,
+            top = 380,
+            id = "button1",
+            label = res1,
+            onEvent = boton1,
+            shape="roundedRect",
+            width = 200,
+            height = 40,
+            cornerRadius = 3,
+            fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+            labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+        }
+        screenGroup:insert( b1 )
+
+        b2 = widget.newButton
+        {
+            left = 60,
+            top = 430,
+            id = "button2",
+            label = res2,
+            onEvent = boton2,
+            shape="roundedRect",
+            width = 200,
+            height = 40,
+            cornerRadius = 3,
+            fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+            labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+        }
+        screenGroup:insert( b2 )
+
+         b3 = widget.newButton
+        {
+            left = 60,
+            top = 480,
+            id = "button1",
+            label = res3,
+            onEvent = boton3,
+            shape="roundedRect",
+            width = 200,
+            height = 40,
+            cornerRadius = 3,
+            fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+            labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+        }
+        screenGroup:insert( b3 )
+
+end
+--]]
        --boton 3
     end
 end
