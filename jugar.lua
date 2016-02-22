@@ -636,7 +636,7 @@ local function onGetObjects( event )
             res3 = event.results[num].respuesta3
         end
      
-        local correcta = event.results[num].correcta
+        correcta = event.results[num].correcta
 
         if event.results[num].archivo~=nil then
             pregunta = display.newText(event.results[num].pregunta, centrox, 185, native.systemFont, 18)
