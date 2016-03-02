@@ -16,8 +16,13 @@ function scene:create( event )
     local background = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
     background:setFillColor(1, 1, 1)
     screenGroup:insert( background )
-    local textlog = display.newText("Eventos", centrox, 60, native.systemFont, 40)
-    textlog:setFillColor( 0, 0, 0 )
+    local myRectangle = display.newRect( centrox, 245, 400, 700 )
+    myRectangle:setFillColor( 0,0.6,0.7 )
+    myRectangle.strokeWidth = 15
+    myRectangle:setStrokeColor( 0, 0.45, 0.65 )
+    screenGroup:insert( myRectangle )
+    local textlog = display.newText("Eventos", centrox, 40, native.systemFontBold, 40)
+    textlog:setFillColor( 1, 1, 1 )
     screenGroup:insert( textlog )
 
 -------------------------------------------------------------------------------------------
@@ -31,30 +36,10 @@ function scene:create( event )
            else
             if (event.response.evento=="") then
                 print("No hay eventos")
-                local nombreEvento = display.newText("No tienes eventos", centrox, 130, native.systemFont, 30)
-                    nombreEvento:setFillColor( 0, 0, 0 )
+                local nombreEvento = display.newText("No tienes eventos", centrox, 130, native.systemFontBold, 30)
+                    nombreEvento:setFillColor( 1, 1, 1 )
                     screenGroup:insert( nombreEvento )
-                    local function regre( event )
-                        if ( "ended" == event.phase ) then
-                            --composer.removeScene( "menuSesion")
-                            composer.gotoScene("menuSesion")
-                        end
-                    end
-                    local regresar = widget.newButton
-                    {
-                        left = 70,
-                        top = 170,
-                        id = "button1",
-                        label = "Regresar",
-                        onEvent = regre,
-                        shape="roundedRect",
-                        width = 180,
-                        height = 40,
-                        cornerRadius = 3,
-                        fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
-                        labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
-                    }
-                    screenGroup:insert( regresar )
+
             else
                 eventoId = event.response.evento
                 local participo = event.response.participo
@@ -62,35 +47,51 @@ function scene:create( event )
                 local function onGetObjects( event )
                   if not event.error then
                     local cont = 0
-                    print( event.results[1].nombre )
-                    local nombreEvento = display.newText(event.results[1].nombre, centrox, 130, native.systemFont, 30)
-                    nombreEvento:setFillColor( 0, 0, 0 )
+                    --print( event.results[1].nombre )
+                    local nombreEvento = display.newText(event.results[1].nombre, centrox, 85, native.systemFontBold, 30)
+                    nombreEvento:setFillColor( 1, 1, 1 )
                     screenGroup:insert( nombreEvento )
                     local imagen = display.newImageRect("calendar1.png", 150, 150)
                     imagen.x = display.contentCenterX
-                    imagen.y = display.contentCenterY-50
+                    imagen.y = display.contentCenterY-105
                     screenGroup:insert( imagen )
                     local stringFeIni=string.gsub(event.results[1].fecha_inicio.iso, "T", " Hora: ")
                     stringFeIni=string.gsub(stringFeIni, ".00.000Z", "")
                     print(stringFeIni)
                     local stringFeFin=string.gsub(event.results[1].fecha_fin.iso, "T", " Hora: ")
                     stringFeFin=string.gsub(stringFeFin, ".00.000Z", "")
-                    print(stringFeFin)
-                    print( date.year, date.month, date.day )  -- Print year and month
-                    print( date.hour, date.min ) 
-                    local fechaIniTxt = display.newText("Inicio Evento:", centrox-65, 320, native.systemFont, 20)
-                    fechaIniTxt:setFillColor( 0, 0, 0 )
+                    --print(stringFeFin)
+                    --print( date.year, date.month, date.day )  -- Print year and month
+                    --print( date.hour, date.min ) 
+                    local fechaIniTxt = display.newText("Inicio Evento:", centrox-45, 270, native.systemFontBold, 20)
+                    fechaIniTxt:setFillColor( 1, 1, 1 )
                     screenGroup:insert( fechaIniTxt )
-                    local fechaIni = display.newText(stringFeIni, centrox, 350, native.systemFont, 20)
-                    fechaIni:setFillColor( 0, 0, 0 )
+                    local fechaIni = display.newText(stringFeIni, centrox, 290, native.systemFontBold, 20)
+                    fechaIni:setFillColor( 1, 1, 1 )
                     screenGroup:insert( fechaIni )
-                    local fechaFinTxt = display.newText("Fin Evento:", centrox-75, 380, native.systemFont, 20)
-                    fechaFinTxt:setFillColor( 0, 0, 0 )
+                    local fechaFinTxt = display.newText("Fin Evento:", centrox-55, 320, native.systemFontBold, 20)
+                    fechaFinTxt:setFillColor( 1, 1, 1 )
                     screenGroup:insert( fechaFinTxt )
-                    local fechaFin = display.newText(stringFeFin, centrox, 410, native.systemFont, 20)
-                    fechaFin:setFillColor( 0, 0, 0 )
+                    local fechaFin = display.newText(stringFeFin, centrox, 340, native.systemFontBold, 20)
+                    fechaFin:setFillColor( 1, 1, 1 )
                     screenGroup:insert( fechaFin )
-                    if string.find(stringFeIni, date.year.."(-)"..date.month.."(-)"..date.day.." Hora: ")~=nil then
+                    print(string.len(date.month))
+                    local mes
+                    local dia
+                    if string.len(date.month)==1 then
+                        mes="0"..date.month
+                    else
+                        mes=date.month
+                    end
+                    if string.len(date.day)==1 then
+                        dia="0"..date.day
+                    else
+                        dia=date.day
+                    end
+                    print(stringFeIni)
+                    print(date.year.."(-)"..mes.."(-)"..dia)
+                    print(string.find(stringFeIni, date.year.."(-)"..mes.."(-)"..dia))
+                    if string.find(stringFeIni, date.year.."(-)"..mes.."(-)"..dia)~=nil then
                         print("estas en fecha")
                         for i=0,23 do
                             if i<=9 then
@@ -171,12 +172,13 @@ function scene:create( event )
                     end
                     if cont==4 then
                         print("estas en tiempo del evento")
-                        local function comen( event )
+                    local function comen( event )
                         if ( "ended" == event.phase ) then
-                            if(participo~=true) then
-                                composer.removeScene( "seleccionCategoriaEvento")
-                                composer.gotoScene("seleccionCategoriaEvento")
-                            else
+                        local mydata = require( "mydata" )
+                            print(mydata.participo)
+                            print(participo)
+                            if(mydata.participo~=nil or participo~=false) then
+                                
                                 local function onComplete( event )
                            if event.action == "clicked" then
                                 local i = event.index
@@ -185,15 +187,19 @@ function scene:create( event )
                                 end
                             end
                           end
+
                         local alert = native.showAlert( "Alerta!", "Ya has participado en este evento", { "OK" }, onComplete )
-                            end
+                            else
+                            composer.removeScene( "seleccionCategoriaEvento")
+                            composer.gotoScene("seleccionCategoriaEvento")
+                        end
                             
                         end
                     end
                     local comenzar = widget.newButton
                     {
                         left = 70,
-                        top = 440,
+                        top = 370,
                         id = "button1",
                         label = "Comenzar",
                         onEvent = comen,
@@ -203,6 +209,7 @@ function scene:create( event )
                         cornerRadius = 3,
                         fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
                         labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+                        font = native.systemFontBold
                     }
                     screenGroup:insert( comenzar )
                     local function puntu( event )
@@ -214,7 +221,7 @@ function scene:create( event )
                     local puntuacion = widget.newButton
                     {
                         left = 70,
-                        top = 490,
+                        top = 420,
                         id = "button1",
                         label = "Puntuaciones",
                         onEvent = puntu,
@@ -224,16 +231,17 @@ function scene:create( event )
                         cornerRadius = 3,
                         fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
                         labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+                        font = native.systemFontBold
                     }
                     screenGroup:insert( puntuacion )
 
                     else
                         print("no estas a tiempo del evento")
-                        local participantes = display.newText("Participantes: "..event.results[1].inscritos, centrox, 450, native.systemFont, 20)
-                        participantes:setFillColor( 0, 0, 0 )
+                        local participantes = display.newText("Participantes: "..event.results[1].inscritos, centrox, 390, native.systemFontBold, 20)
+                        participantes:setFillColor( 1, 1, 1 )
                         screenGroup:insert( participantes )
-                        local capacidad = display.newText("Capacidad: "..event.results[1].capacidad, centrox, 480, native.systemFont, 20)
-                        capacidad:setFillColor( 0, 0, 0 )
+                        local capacidad = display.newText("Capacidad: "..event.results[1].capacidad, centrox, 420, native.systemFontBold, 20)
+                        capacidad:setFillColor( 1, 1, 1 )
                         screenGroup:insert( capacidad )
                     end
                    
@@ -252,7 +260,36 @@ function scene:create( event )
     --end
     --parse:loginUser( { ["username"] = "rihch888@gmail.com", ["password"] = "licuadora" }, onLoginUser )
 -------------------------------------------------------------------------------------------
+    local function regresar( event )
+        if ( "ended" == event.phase ) then
 
+        composer.removeScene("eventos")
+        composer.gotoScene("menuSesion")
+        end
+    end
+
+    button2 = widget.newButton
+    {
+    label = "button2",
+    onEvent = regresar,
+    emboss = false,
+    --properties for a rounded rectangle button...
+    shape="roundedRect",
+    width = 180,
+    height = 40,
+    cornerRadius = 3,
+    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+    font = native.systemFontBold
+    }
+
+-- Center the button
+    button2.x = _W*0.5
+    button2.y = 490
+
+-- Change the button's label text
+    button2:setLabel( "Volver")
+    screenGroup:insert(button2)
 
     
     

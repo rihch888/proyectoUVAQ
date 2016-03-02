@@ -28,17 +28,21 @@ function scene:create( event )
     screenGroup:insert( background )
     local fondo = nil
     local textoOpcion = nil 
-    local myText = display.newText( "Preguntas", 100, 60, native.systemFont, 42 )
+    --[[local myText = display.newText( "Preguntas", 100, 60, native.systemFont, 42 )
     myText:setFillColor( 0, 0, 0 )
     myText.x=centrox
     screenGroup:insert( myText )
     local logo = display.newImage("logo.png", centrox, 140)
-    screenGroup:insert( logo )
-    local imagen = display.newImageRect("ruleta.png", 150, 150)
+    screenGroup:insert( logo )]]
+    local imagen = display.newImageRect("upload.png", 250, 210)
     imagen.x = centrox
-    imagen.y = 280
+    imagen.y = 160
     screenGroup:insert( imagen )
-
+    local myRectangle = display.newRect( centrox, 450, 400, 280 )
+    myRectangle:setFillColor( 0,0.6,0.7 )
+    myRectangle.strokeWidth = 15
+    myRectangle:setStrokeColor( 0, 0.45, 0.65 )
+    screenGroup:insert( myRectangle )
 
     local function entra( event )
         if ( "ended" == event.phase ) then
@@ -49,7 +53,7 @@ function scene:create( event )
     local entrar = widget.newButton
     {
         left = 70,
-        top = 380,
+        top = 350,
         id = "button1",
         label = "Iniciar sesión",
         onEvent = entra,
@@ -59,19 +63,20 @@ function scene:create( event )
         cornerRadius = 3,
         fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
         labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+        font = native.systemFontBold
     }
     screenGroup:insert( entrar )
 
     local function registro( event )
         if ( "ended" == event.phase ) then
-            composer.gotoScene("opcionRegistro")
+            composer.gotoScene("registro")
         end
     end
     
     local registrar = widget.newButton
     {
         left = 70,
-        top = 430,
+        top = 400,
         id = "button1",
         label = "Registrar",
         onEvent = registro,
@@ -81,8 +86,32 @@ function scene:create( event )
         cornerRadius = 3,
         fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
         labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+        font = native.systemFontBold
     }
     screenGroup:insert( registrar )
+
+    local function conf( event )
+        if ( "ended" == event.phase ) then
+            --composer.gotoScene("conf")
+        end
+    end
+
+    local config = widget.newButton
+    {
+        left = 70,
+        top = 450,
+        id = "button1",
+        label = "Configuración",
+        onEvent = conf,
+        shape="roundedRect",
+        width = 180,
+        height = 40,
+        cornerRadius = 3,
+        fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+        labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+        font = native.systemFontBold
+    }
+    screenGroup:insert( config )
 
 end
 

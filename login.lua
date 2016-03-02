@@ -15,12 +15,20 @@ function scene:create( event )
     parse.showStatus = true
     centrox = display.contentCenterX
     centroy = display.contentCenterY
+
     local background = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
     background:setFillColor(1, 1, 1)
     screenGroup:insert( background )
-    local textlog = display.newText("Login", centrox, 100, native.systemFont, 30)
-    textlog:setFillColor( 0, 0, 0 )
+
+    local myRectangle = display.newRect( centrox, 400, 500, 500 )
+    myRectangle:setFillColor( 0,0.6,0.7 )
+    myRectangle.strokeWidth = 15
+    myRectangle:setStrokeColor( 0, 0.45, 0.65 )
+    screenGroup:insert( myRectangle )
+    local textlog = display.newText("Iniciar Sesión", centrox, 200, native.systemFontBold, 30)
+    textlog:setFillColor( 1, 1, 1 )
     screenGroup:insert( textlog )
+
     local userObjId = nil
     --local e_mail = "a@gmail.com"
     local response = nil
@@ -82,7 +90,6 @@ function scene:create( event )
                    if event.action == "clicked" then
                         local i = event.index
                         if i == 1 then
-                          email.text=""
                           pass.text=""
                         end
                     end
@@ -178,7 +185,7 @@ doFacebookLogin()
         ------fin entrarFace---------
     end
 
-     local loginFace = widget.newButton
+--[[     local loginFace = widget.newButton
 {
     id = "loginFace",
     label = "Conectate con Facebook",
@@ -191,8 +198,16 @@ doFacebookLogin()
     labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
 }
 loginFace.x = _W*0.5
-loginFace.y = _H*0.3
-screenGroup:insert( loginFace )
+loginFace.y = _H*0.2
+screenGroup:insert( loginFace )]]
+
+-------------------------------------------------------------------------------
+local face = display.newImageRect( "facebook3.png", 250, 50 )
+face.x = display.contentCenterX
+face.y = _H*0.13
+screenGroup:insert( face )
+face:addEventListener("touch", entrarFace)
+-------------------------------------------------------------------------------
     
     local login = widget.newButton
 {
@@ -205,12 +220,34 @@ screenGroup:insert( loginFace )
     cornerRadius = 3,
     fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
     labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+    font = native.systemFontBold
 }
 login.x = _W*0.5
-login.y = _H*0.75
+login.y = _H*0.67
 screenGroup:insert( login )
 
-    local opcionesTexto2 = {
+local function irAtras (event)
+  composer.gotoScene("menuInicio")
+end
+
+local atras = widget.newButton
+{
+    id = "button1",
+    label = "Volver",
+    onEvent = irAtras,
+    shape="roundedRect",
+    width = 180,
+    height = 40,
+    cornerRadius = 3,
+    fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
+    labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+    font = native.systemFontBold
+}
+atras.x = _W*0.5
+atras.y = _H*0.76
+screenGroup:insert( atras )
+
+    --[[local opcionesTexto2 = {
         text ="O accede con tu cuenta", 
         font = native.systemFont, 
         fontSize =18,
@@ -220,7 +257,7 @@ screenGroup:insert( login )
 
     textoOpcion = display.newText(opcionesTexto2)
     textoOpcion:setTextColor( 0,0,0 )
-    screenGroup:insert(textoOpcion)
+    screenGroup:insert(textoOpcion)]]
 
 local function onKeyEvent( event )
     if ( event.keyName == "back" ) then
@@ -246,10 +283,10 @@ function scene:show( event )
         -- Called when the scene is still off screen (but is about to come on screen).
     elseif ( phase == "did" ) then
         -- Example: start timers, begin animation, play audio, etc.
-        email = native.newTextField(_W*0.5,_H*0.55, 180, 40 )
+        email = native.newTextField(_W*0.5,_H*0.47, 180, 40 )
         email.inputType = "email"
         email.placeholder = "Email"
-        pass = native.newTextField( _W*0.5,_H*0.65, 180, 40 )
+        pass = native.newTextField( _W*0.5,_H*0.57, 180, 40 )
         pass.isSecure = true
         pass.placeholder = "Contraseña"
     end

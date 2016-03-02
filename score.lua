@@ -15,32 +15,26 @@ function scene:create( event )
 	local background = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
 	background:setFillColor(1, 1, 1)
 	sceneGroup:insert( background )
-	local text = display.newImageRect("texto.png", 125, 35)
-	text.x = centrox-(centrox/12)
-	text.y = 50
-	sceneGroup:insert( text )
-	local logo = display.newImageRect("logo.png", 100, 35)
-	logo.x = centrox+(centrox/1.5)
-	logo.y = 50
-	sceneGroup:insert( logo )
-	local imagen = display.newImageRect("ruleta.png", 50, 50)
-	imagen.x = centrox-(centrox/1.4)
-	imagen.y = 50
-	sceneGroup:insert( imagen )
-	local puntuacion = display.newText("Felicidades", centrox, 150, native.systemFont, 40)
-	puntuacion:setFillColor(0, 0, 0)
+
+	local myRectangle = display.newRect( centrox, 210, 400, 800 )
+    myRectangle:setFillColor( 0,0.6,0.7 )
+    myRectangle.strokeWidth = 15
+    myRectangle:setStrokeColor( 0, 0.45, 0.65 )
+    sceneGroup:insert( myRectangle )
+	local puntuacion = display.newText("Felicidades", centrox, 150, native.systemFontBold, 40)
+	puntuacion:setFillColor(1, 1, 1)
 	sceneGroup:insert( puntuacion )
-	local puntuacion2 = display.newText("tu puntuaje es de:", centrox, 210, native.systemFont, 35)
-	puntuacion2:setFillColor(0, 0, 0)
+	local puntuacion2 = display.newText("tu puntuación es de:", centrox, 210, native.systemFontBold, 30)
+	puntuacion2:setFillColor(1, 1, 1)
 	sceneGroup:insert( puntuacion2 )
-	local estrella = display.newImageRect("estrella.png",160,160)
+	local estrella = display.newImageRect("star2.png",160,160)
 	estrella.x = centrox
 	estrella.y = 330
 	sceneGroup:insert( estrella )
 
 	--local mydata = require( "mydata" )
-	puntuacionNumero = display.newText("", centrox, 330, native.systemFont, 60)
-	puntuacionNumero:setFillColor(0, 0, 0)
+	puntuacionNumero = display.newText("", centrox, 330, native.systemFontBold, 60)
+	puntuacionNumero:setFillColor(1, 1, 1)
 	sceneGroup:insert( puntuacionNumero )
 	--mydata.score.text="0"
 	
@@ -67,6 +61,7 @@ function scene:create( event )
 	        cornerRadius = 3,
 	        fillColor = { default={ 0, 0.45, 0.65, 1  }, over={ 0, 0.5, 0.7, 1 } },
 	        labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+	        font = native.systemFontBold
 	    }
 	    sceneGroup:insert( bexit )
 end

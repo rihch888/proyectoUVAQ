@@ -16,9 +16,13 @@ function scene:create( event )
     local background = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
     background:setFillColor(1, 1, 1)
     screenGroup:insert( background )
-    --
-    local textreg = display.newText("Registro", centrox, 35, native.systemFont, 30)
-    textreg:setFillColor( 0, 0, 0 )
+    local myRectangle = display.newRect( centrox, 450, 400, 280 )
+    myRectangle:setFillColor( 0,0.6,0.7 )
+    myRectangle.strokeWidth = 15
+    myRectangle:setStrokeColor( 0, 0.45, 0.65 )
+    screenGroup:insert( myRectangle )
+    local textreg = display.newText("Registro", centrox, 35, native.systemFontBold, 35)
+    textreg:setFillColor( 0, 0.45, 0.65 )
     screenGroup:insert( textreg )
 
     local function registro( event )
@@ -76,6 +80,7 @@ function scene:create( event )
                         email.text=""
                         pass.text="" 
                       end
+
                   end
                 end
               local alert = native.showAlert( "Registrado exitosamente!", "Te hemos enviado un correo electrónico para poder completar tu registro", { "OK" }, onComplete )
@@ -91,7 +96,7 @@ function scene:create( event )
 local registrar = widget.newButton
 {
     left = 70,
-    top = 330,
+    top = 350,
     id = "button1",
     label = "Registrar",
     onEvent = registro,
@@ -101,20 +106,23 @@ local registrar = widget.newButton
     cornerRadius = 3,
     fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
     labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+    font = native.systemFontBold
 }
+registrar.x = _W*0.5
+registrar.y = _H*0.67
 screenGroup:insert( registrar )
 
 ----------------------------
 local function atras( event )
-  composer.gotoScene("opcionRegistro")
+  composer.gotoScene("menuInicio")
 end
 
 local atras = widget.newButton
 {
     left = 70,
-    top = 630,
+    top = 650,
     id = "button1",
-    label = "atras",
+    label = "Volver",
     onEvent = atras,
     shape="roundedRect",
     width = 180,
@@ -122,9 +130,10 @@ local atras = widget.newButton
     cornerRadius = 3,
     fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
     labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+    font = native.systemFontBold
 }
 atras.x = _W*0.5
-atras.y = _H*0.7
+atras.y = _H*0.76
 screenGroup:insert( atras )
 --------------------
 
@@ -133,7 +142,7 @@ local function onKeyEvent( event )
         local platformName = system.getInfo( "platformName" )
         if ( platformName == "Android" ) or ( platformName == "WinPhone" ) then
             native.setKeyboardFocus(nil)
-            composer.gotoScene("opcionRegistro")
+            composer.gotoScene("menuInicio")
             return true
         end
     end
@@ -161,6 +170,7 @@ function scene:show( event )
         pass.isSecure = true
         pass.placeholder = "Contraseña"
     end
+
 end
 
 function scene:hide( event )
@@ -178,6 +188,7 @@ function scene:hide( event )
     elseif ( phase == "did" ) then
         -- Called immediately after scene goes off screen.
     end
+
 end
 
 

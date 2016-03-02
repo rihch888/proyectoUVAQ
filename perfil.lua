@@ -30,6 +30,11 @@ function scene:create( event )
     background = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
     background:setFillColor(1, 1, 1)
     sceneGroup:insert( background )
+    local myRectangle = display.newRect( centrox, 495, 400, 500 )
+    myRectangle:setFillColor( 0,0.6,0.7 )
+    myRectangle.strokeWidth = 15
+    myRectangle:setStrokeColor( 0, 0.45, 0.65 )
+    sceneGroup:insert( myRectangle )
 
     local photoAvatar = nil
     local photoAvatar3 = nil
@@ -163,29 +168,29 @@ end
     end
 
     local opcionesTexto = {
-        text ="Nombre de usuario", 
-        font = native.systemFont, 
-        fontSize =20,
+        text ="Nombre de Usuario", 
+        font = native.systemFontBold, 
+        fontSize =25,
         x=  _W*0.5,
-        y=  _H*0.45
+        y=  _H*0.47
     }
 
 
     texto1 = display.newText(opcionesTexto)
-    texto1:setFillColor(0,0,0)
+    texto1:setFillColor(1,1,1)
 
    
     sceneGroup:insert(texto1)
 
     local opcionesTexto = {
-        text ="Nueva contraseña", 
-        font = native.systemFont, 
-        fontSize =20,
+        text ="Nueva Contraseña", 
+        font = native.systemFontBold, 
+        fontSize =25,
         x=  _W*0.5,
-        y=  _H*0.65
+        y=  _H*0.62
     }
     texto2 = display.newText(opcionesTexto)
-    texto2:setFillColor(0,0,0)
+    texto2:setFillColor(1,1,1)
     
     --textF2.isSecure = true
     sceneGroup:insert(texto2)
@@ -202,7 +207,7 @@ end
         fitImage(photoAvatar,display.contentWidth-20,display.contentHeight*0.3, true)
         sceneGroup:insert(photoAvatar)
         else
-            photo = display.newImage( "avatar.png")
+            photo = display.newImage( "user2.png")
             photo.x = _W*0.5
             photo.y = _H*0.19
           --  photo:addEventListener( "touch", menuImg )
@@ -328,14 +333,15 @@ end
     cornerRadius = 3,
     fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
     labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+    font = native.systemFontBold
     }
 
 -- Center the button
     button1.x = _W*0.5
-    button1.y = _H*0.85
+    button1.y = _H*0.82
 
 -- Change the button's label text
-    button1:setLabel( "Guardar cambios")
+    button1:setLabel( "Guardar")
     end
 
     guardar()
@@ -363,14 +369,15 @@ end
     cornerRadius = 3,
     fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
     labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+    font = native.systemFontBold
     }
 
 -- Center the button
     button2.x = _W*0.5
-    button2.y = _H*0.95
+    button2.y = _H*0.91
 
 -- Change the button's label text
-    button2:setLabel( "Regresar")
+    button2:setLabel( "Volver")
     sceneGroup:insert(button2)
     --]]
 
@@ -386,6 +393,7 @@ end
     cornerRadius = 3,
     fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
     labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+    font = native.systemFontBold
     }
 
 -- Center the button
@@ -446,7 +454,7 @@ function scene:show( event )
         textF1 = native.newTextField( _W*0.5,_H*0.55 , 180, 40 )
         --textF1.align = "center"
         textF1:setTextColor( 0, 0, 0 )
-        textF2 = native.newTextField( _W*0.5,_H*0.75 , 180, 40 )
+        textF2 = native.newTextField( _W*0.5,_H*0.70 , 180, 40 )
         --textF2.align = "center"
         textF2:setTextColor( 0, 0, 0 )
         textF2.isSecure = true

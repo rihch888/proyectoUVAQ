@@ -13,41 +13,46 @@ function scene:create( event )
     background = display.newRect( display.contentCenterX, display.contentCenterY,display.contentWidth , display.contentHeight)
 	background:setFillColor(1, 1, 1)
 	sceneGroup:insert( background )
+	local myRectangle = display.newRect( centrox, 210, 400, 800 )
+    myRectangle:setFillColor( 0,0.6,0.7 )
+    myRectangle.strokeWidth = 15
+    myRectangle:setStrokeColor( 0, 0.45, 0.65 )
+    sceneGroup:insert( myRectangle )
 	imagens2 = display.newImageRect( "ruleta.png", 200, 200 )    
 	imagens2.x = display.contentCenterX
-	imagens2.y = display.contentCenterY+100 
+	imagens2.y = display.contentCenterY+80
 	sceneGroup:insert( imagens2 )
-	textGirar = display.newText("Toca para girar!", display.contentCenterX, 100, native.systemFont, 40)
-	textGirar:setFillColor(0,0,0)
+	textGirar = display.newText("Toca para girar!", display.contentCenterX, 100, native.systemFontBold, 40)
+	textGirar:setFillColor(1,1,1)
 	sceneGroup:insert( textGirar )
 	flecha = display.newImageRect("flecha.png", 55, 70)
 	flecha.x = display.contentCenterX
-	flecha.y = display.contentCenterY-20
+	flecha.y = display.contentCenterY-40
 	sceneGroup:insert( flecha )
 	--pant
 	pant = display.newRect( display.contentCenterX, display.contentCenterY,display.contentWidth , display.contentHeight)
-	pant:setFillColor(0, 0, 0, 0.8)
+	pant:setFillColor(0, 0, 0, 0.9)
 	sceneGroup:insert( pant )
 	pant.isVisible=false
 	--textcategoria
-	textcategoria = display.newText("", display.contentCenterX, 80, native.systemFont, 40)
+	textcategoria = display.newText("", display.contentCenterX, 90, native.systemFontBold, 35)
 	sceneGroup:insert( textcategoria )
 	--sprite
 		local options =
 			    {
 	        --required parameters
-	        width = 150,
-	        height = 150,
-	        numFrames = 4,
+	        width = 190,
+	        height = 240,
+	        numFrames = 10,
 	    }
-   		local imageSheet = graphics.newImageSheet( "twitter-sprite.png", options )
+   		local imageSheet = graphics.newImageSheet( "monster.png", options )
    		local sequenceData =  
 	    {
 	        {
 	            name="fly",
 	            start=1,
-	            count=4,
-	            time=250,
+	            count=10,
+	            time=650,
 	            loopCount = 0,    -- 0 – Infinite, >0  
 	            loopDirection = "forward"    -- Optional ; values include "forward" or "bounce"
 	        }
@@ -57,7 +62,7 @@ function scene:create( event )
 	    sprite:setSequence( "fly" )
 	    sprite:play()
 	    sprite.x=display.contentCenterX
-	    sprite.y=display.contentCenterY
+	    sprite.y=display.contentCenterY-30
 	    sprite.isVisible=false
 
 		--jugar
@@ -71,7 +76,7 @@ function scene:create( event )
 	    jugar = widget.newButton
         {
             left = 70,
-            top = 480,
+            top = 440,
             label = "Jugar",
             onEvent = juega,
             shape="roundedRect",
@@ -80,6 +85,7 @@ function scene:create( event )
             cornerRadius = 3,
             fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
             labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+            font = native.systemFontBold
         }
         sceneGroup:insert( jugar )
         jugar.isVisible=false
@@ -122,7 +128,24 @@ function scene:show( event )
 				
 				timer.pause( tiempoEspera )
 				pant.isVisible=true
+				if(categoriaRand=="Filosofía Institucional") then
+					local i=0
+					for token in string.gmatch(categoriaRand, "[^%s]+") do
+						if i==0 then
+					   		print(token)
+					   		textcategoria = display.newText(token, display.contentCenterX, 90, native.systemFontBold, 35)
+					   		sceneGroup:insert( textcategoria )
+						else
+							print(token)
+					   		textcategoria2 = display.newText(token, display.contentCenterX, 125, native.systemFontBold, 35)
+					   		sceneGroup:insert( textcategoria2 )
+						end
+						i=i+1;
+					end
+					print("entra!!!!!---")
+				else
 				textcategoria.text=categoriaRand
+				end
 				local mydata = require( "mydata" )
 		        mydata.categoria = categoriaRand
 		        sprite.isVisible=true

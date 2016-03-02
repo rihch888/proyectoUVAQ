@@ -16,13 +16,26 @@ function scene:create( event )
     local background = display.newRect( centrox, centroy,display.contentWidth , display.contentHeight)
     background:setFillColor(1, 1, 1)
     screenGroup:insert( background )
-    local textperf = display.newText("Perfil de", centrox, 50, native.systemFont, 30)
-    textperf:setFillColor( 0, 0, 0 )
-    screenGroup:insert( textperf )
-    logoGrande = display.newImageRect("ruleta.png", 150, 150)
-    logoGrande.x = centrox
-    logoGrande.y = 220
-    screenGroup:insert( logoGrande )
+
+    --[[local myRectangle = display.newRect( centrox, 60, 400, 170 )
+    myRectangle:setFillColor( 0,0.6,0.7 )
+    myRectangle.strokeWidth = 15
+    myRectangle:setStrokeColor( 0, 0.45, 0.65 )
+    screenGroup:insert( myRectangle )]]
+    local myRectangle = display.newRect( centrox, 395, 400, 500 )
+    myRectangle:setFillColor( 0,0.6,0.7 )
+    myRectangle.strokeWidth = 15
+    myRectangle:setStrokeColor( 0, 0.45, 0.65 )
+    screenGroup:insert( myRectangle )
+
+    local imagen = display.newImageRect("upload.png", 210, 170)
+    imagen.x = centrox
+    imagen.y = 135
+    screenGroup:insert( imagen )
+    --[[local textperf = display.newText("Perfil de", centrox, 200, native.systemFontBold, 30)
+    textperf:setFillColor( 1, 1, 1 )
+    screenGroup:insert( textperf )]]
+
     
 
     
@@ -36,7 +49,7 @@ function scene:create( event )
     local jugar = widget.newButton
     {
         left = 70,
-        top = 310,
+        top = 290,
         id = "jugar",
         label = "Jugar",
         onEvent = juega,
@@ -46,6 +59,7 @@ function scene:create( event )
         cornerRadius = 3,
         fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
         labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+        font = native.systemFontBold
     }
     screenGroup:insert( jugar )
     
@@ -58,7 +72,7 @@ function scene:create( event )
         local eventos = widget.newButton
     {
         left = 70,
-        top = 410,
+        top = 390,
         id = "button1",
         label = "Eventos",
         onEvent = eve,
@@ -68,6 +82,7 @@ function scene:create( event )
         cornerRadius = 3,
         fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
         labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+        font = native.systemFontBold
     }
     screenGroup:insert( eventos )
 
@@ -80,7 +95,7 @@ function scene:create( event )
     local perfil = widget.newButton
     {
         left = 70,
-        top = 360,
+        top = 340,
         id = "perf",
         label = "Perfil",
         onEvent = perf,
@@ -90,6 +105,7 @@ function scene:create( event )
         cornerRadius = 3,
         fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
         labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+        font = native.systemFontBold
     }
     screenGroup:insert( perfil )
     local function ayu( event )
@@ -101,7 +117,7 @@ function scene:create( event )
     local punt = widget.newButton
     {
         left = 70,
-        top = 460,
+        top = 440,
         id = "button1",
         label = "Puntuación",
         onEvent = ayu,
@@ -111,19 +127,61 @@ function scene:create( event )
         cornerRadius = 3,
         fillColor = { default={ 0, 0.45, 0.65, 1 }, over={ 0, 0.5, 0.7, 1 } },
         labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+        font = native.systemFontBold
     }
 
-
     screenGroup:insert( punt )
+
+    local function sal( event )
+        if ( "ended" == event.phase ) then
+            local function onComplete( event )
+           if event.action == "clicked" then
+                local i = event.index
+                if i == 1 then
+                  --Parse.USER.logOut();
+                  --parse.logOut();
+                  --parse:clearSessionToken()
+                  composer.gotoScene("menuInicio")
+                elseif i == 2 then
+
+                end
+            end
+        end
+
+        local alert = native.showAlert( "Alerta!", "Seguro que deseas cerrar sesión?", { "Si", "No" }, onComplete )
+        end
+    end
+    
+    local salir = widget.newButton
+    {
+        left = 70,
+        top = 490,
+        id = "button1",
+        label = "Salir",
+        onEvent = sal,
+        shape="roundedRect",
+        width = 180,
+        height = 40,
+        cornerRadius = 3,
+        fillColor = { default={ 0.8, 0, 0, 1 }, over={ 1, 0, 0, 1 }},
+        labelColor = { default={ 1, 1, 1 }, over={ 1, 1, 1, 0.5 } },
+        font = native.systemFontBold
+    }
+
+    screenGroup:insert( salir )
+
      local function onGetMe( event )
        if event.code == parse.EXPIRED then
          local textlog = display.newText("Expiro la session ", centrox, 90, native.systemFont, 30)
          textlog:setFillColor( 0, 0, 0 )
          screenGroup:insert( textlog )
        else
-         local textperf2 = display.newText(event.response.nombre, centrox, 90, native.systemFont, 30)
-         textperf2:setFillColor( 0, 0, 0 )
+         local textperf2 = display.newText(event.response.nombre, centrox, 235, native.systemFontBold, 30)
+         textperf2:setFillColor( 1, 1, 1 )
          screenGroup:insert( textperf2 )
+         local textperf3 = display.newText(event.response.email, centrox, 265, native.systemFontBold, 20)
+         textperf3:setFillColor( 1, 1, 1 )
+         screenGroup:insert( textperf3 )
        end
      end
      parse:getMe( onGetMe )
@@ -133,7 +191,18 @@ function scene:create( event )
         local platformName = system.getInfo( "platformName" )
         if ( platformName == "Android" ) or ( platformName == "WinPhone" ) then
             native.setKeyboardFocus(nil)
-            composer.gotoScene("menuSesion")
+        local function onComplete( event )
+           if event.action == "clicked" then
+                local i = event.index
+                if i == 1 then
+                  composer.gotoScene("menuInicio")
+                elseif i == 2 then
+
+                end
+            end
+        end
+
+        local alert = native.showAlert( "Alerta!", "Seguro que deseas cerrar sesión?", { "Si", "No" }, onComplete )
             return true
         end
     end
@@ -168,26 +237,7 @@ end
 
 function scene:destroy( event )
     local sceneGroup = self.view
-    background:removeSelf()
-    background=nil
-    text:removeSelf()
-    text=nil
-    logo:removeSelf()
-    logo=nil
-    imagen:removeSelf()
-    imagen=nil
-    textperf:removeSelf()
-    textperf=nil
-    logoGrande:removeSelf()
-    logoGrande=nil
-    jugar:removeSelf()
-    jugar=nil
-    perfil:removeSelf()
-    perfil=nil
-    ayudar:removeSelf()
-    ayudar=nil
-    textperf2:removeSelf()
-    textperf2=nil
+
 end
 
 ---------------------------------------------------------------------------------
