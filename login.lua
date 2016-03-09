@@ -25,7 +25,7 @@ function scene:create( event )
     myRectangle.strokeWidth = 15
     myRectangle:setStrokeColor( 0, 0.45, 0.65 )
     screenGroup:insert( myRectangle )
-    local textlog = display.newText("Iniciar Sesión", centrox, 200, native.systemFontBold, 30)
+    local textlog = display.newText("Iniciar Sesión", _W*0.5, _H*0.35, native.systemFontBold, 30)
     textlog:setFillColor( 1, 1, 1 )
     screenGroup:insert( textlog )
 

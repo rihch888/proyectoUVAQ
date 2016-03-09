@@ -8,10 +8,12 @@ application = {
       scale = "letterBox",
       fps = 30,
 
+
       imageSuffix = {
          ["@2x"] = 1.5,
          ["@4x"] = 3.0,
       },
+
    },
 
    notification =

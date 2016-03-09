@@ -1,15 +1,42 @@
+function DidReceiveRemoteNotification(message, additionalData, isActive)
+    if (additionalData) then
+        if (additionalData.discount) then
+            native.showAlert( "Discount!", message, { "OK" } )
+            -- Take user to your app store
+        elseif (additionalData.actionSelected) then -- Interactive notification button pressed
+            native.showAlert("Button Pressed!", "ButtonID:" .. additionalData.actionSelected, { "OK"} )
+        end
+    else
+        native.showAlert("OneSignal Message", message, { "OK" } )
+    end
+end
+
+local OneSignal = require("plugin.OneSignal")
+-- Uncomment SetLogLevel to debug issues.
+-- OneSignal.SetLogLevel(4, 4)
+OneSignal.Init("cbb6a8c0-f64a-4d97-b04a-b78e1c828248", "366913927839", DidReceiveRemoteNotification)
+
 display.setStatusBar( display.HiddenStatusBar )
 local composer = require "composer"
 local parse = require( "mod_parse" )
-local pushwoosh = require( "pushwoosh" )
+--local pushwoosh = require( "pushwoosh" )
 local json = require "json"
 local notifications = require( "plugin_notifications" )
+_W = display.contentWidth
+_H = display.contentHeight
+
+---------------------------------------
+
+---------------------------------------
+
 parse:init({ 
   appId = "IBEd9JQGfKtJHTCPzXddQsVT6aQUn8Q0LOe8wR5i", 
   apiKey = "lyhtF5oj1K6Ui0I9EVPDwr7CJ1e5mLGdIHn2HKiI"
 })
 
 --system.cancelNotification()
+
+--[[
 local launchArgs = ...
  
 local function onComplete( event )
@@ -89,9 +116,10 @@ pushwoosh.registerForPushNotifications( "A36B5-DA656", launchArgs )
 --Runtime:hideErrorAlerts()
 --notifications.cancelNotification()
 
+--]]
+
 composer.gotoScene( "menuInicio" )
-_W = display.contentWidth
-_H = display.contentHeight
+
 --parse.showStatus = true
 
 

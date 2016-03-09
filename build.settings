@@ -23,6 +23,18 @@ settings =
 		--	publisherId = "com.coronalabs",
 			--supportedPlatforms = { iphone = true },
 		--},
+
+		["plugin.OneSignal"] =
+	    {
+	        publisherId = "com.onesignal",
+	    },
+	    
+	    ["plugin.google.play.services"] =
+	    {
+	        publisherId = "com.coronalabs",
+	        supportedPlatforms = { android=true, ["android-kindle"]=true },
+	    },
+				
     },
    
 	
@@ -72,6 +84,8 @@ settings =
 				"Icon-Small-50.png",
 				"Icon-Small-50@2x.png",
 			},
+
+			UIBackgroundModes = {"remote-notification"},
 
 			--[[
 			-- iOS app URL schemes:
